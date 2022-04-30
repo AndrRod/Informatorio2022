@@ -9,4 +9,6 @@ public interface UserService {
     UserCompleteDto findUserById(Long id);
     UserPartDto createUser(UserPartDto userDto);
     MessagePag findPageBy10Users(int page, WebRequest request);
+    UserPartDto updateUser(Long id, UserPartDto userPartDto);
+    void updateUserRol(Long idUser, String roleName);
 }
