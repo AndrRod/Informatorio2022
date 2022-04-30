@@ -1,4 +1,4 @@
-package com.Informatorio2022.Proyecto2.Exception;
+package com.Informatorio2022.Proyecto2.exception;
 
 import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;

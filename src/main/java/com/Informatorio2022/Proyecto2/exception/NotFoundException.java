@@ -1,4 +1,4 @@
-package com.Informatorio2022.Proyecto2.Exception;
+package com.Informatorio2022.Proyecto2.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

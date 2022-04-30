@@ -1,7 +1,7 @@
 package com.Informatorio2022.Proyecto2.config;
 
-import com.Informatorio2022.Proyecto2.Exception.MessagePag;
-import com.Informatorio2022.Proyecto2.Exception.MessageResum;
+import com.Informatorio2022.Proyecto2.exception.MessagePag;
+import com.Informatorio2022.Proyecto2.exception.MessageResum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public class MessagePage {
+public class PaginationMessage {
     @Autowired
     private MessageResum messageResum;
     public MessagePag messageInfo(Page page, List<Object> dtoPageList, WebRequest request){

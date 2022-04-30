@@ -2,11 +2,14 @@ package com.Informatorio2022.Proyecto2.controller;
 
 import com.Informatorio2022.Proyecto2.dtos.UserCompleteDto;
 import com.Informatorio2022.Proyecto2.dtos.UserPartDto;
+import com.Informatorio2022.Proyecto2.exception.MessagePag;
 import com.Informatorio2022.Proyecto2.model.User;
 import com.Informatorio2022.Proyecto2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.Valid;
 
@@ -23,6 +26,10 @@ public class UserController {
     }
     @PostMapping
     public ResponseEntity<UserPartDto> createUser(@Valid @RequestBody UserPartDto user){
-        return ResponseEntity.ok(userService.createUser(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
+    }
+    @GetMapping
+    public ResponseEntity<MessagePag> getUserById(@RequestParam(value = "page", required = true) String page, WebRequest request){
+        return ResponseEntity.ok(userService.findPageBy10Users(Integer.valueOf(page), request));
     }
 }
