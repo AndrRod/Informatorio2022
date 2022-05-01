@@ -1,4 +1,4 @@
-package com.Informatorio2022.Proyecto2.config;
+package com.Informatorio2022.Proyecto2.exception;
 
 import com.Informatorio2022.Proyecto2.exception.MessagePag;
 import com.Informatorio2022.Proyecto2.exception.MessageResum;
