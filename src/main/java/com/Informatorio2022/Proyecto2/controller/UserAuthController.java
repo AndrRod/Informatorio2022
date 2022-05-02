@@ -2,9 +2,16 @@ package com.Informatorio2022.Proyecto2.controller;
 
 import com.Informatorio2022.Proyecto2.dtos.UserLoginResponseDto;
 import com.Informatorio2022.Proyecto2.dtos.UserPartDto;
+import com.Informatorio2022.Proyecto2.exception.BadRequestException;
 import com.Informatorio2022.Proyecto2.exception.MessageInfo;
 import com.Informatorio2022.Proyecto2.exception.MessageResum;
+import com.Informatorio2022.Proyecto2.model.User;
 import com.Informatorio2022.Proyecto2.service.UserService;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +21,16 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Locale;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/auth")
@@ -35,9 +51,46 @@ public class UserAuthController {
     public ResponseEntity<MessageInfo> accesDenied (WebRequest request){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageInfo(messageResum.message("user.not.access", null), 403, ((ServletWebRequest)request).getRequest().getRequestURI()));
     }
+    @GetMapping("/logout")
+    public ResponseEntity<MessageInfo> logout (WebRequest request){
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MessageInfo(messageResum.message("user.logout", null), 402, ((ServletWebRequest)request).getRequest().getRequestURI()));
+    }
+    @GetMapping("/refresh")
+    public void refreshToken(@RequestBody refreshTokenForm form, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if(form != null && form.getRefresh_token().startsWith("Bearer ")){
+            try {
+                String actualizar_token = form.getRefresh_token().substring("Bearer ".length());
+                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                JWTVerifier verifier = JWT.require(algorithm).build();
+                DecodedJWT decodedJWT = verifier.verify(actualizar_token);
+                String email = decodedJWT.getSubject();
+                User user = userService.findUserByEmail(email);
+                String acceso_token = JWT.create()
+                        .withSubject(user.getEmail())
+                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000)) // 10 minutos
+                        .withIssuer(request.getRequestURL().toString())
+                        .withClaim("role", user.getRole().getAuthority())
+                        .sign(algorithm);
+                response.setContentType(APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(response.getOutputStream(),  new HashMap<>(){{put("access_token", acceso_token); put("update_token", actualizar_token);}});
+            }catch (Exception exception){
+                response.setStatus(FORBIDDEN.value());
+                response.setContentType(APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo(exception.getMessage(), 403, request.getRequestURI()));
+            }
+        }else {
+            response.setStatus(FORBIDDEN.value());
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo(messageResum.message("token.refresh.error", null), 403, request.getRequestURI()));
+        }
+    }
 }
 @Data
 class LoginForm{
     private String email;
     private String password;
+}
+@Data
+class refreshTokenForm{
+    private String refresh_token;
 }

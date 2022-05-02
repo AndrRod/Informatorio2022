@@ -26,11 +26,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-            http.authorizeRequests().antMatchers("/auth/login", "/auth/register", "/auth/refresh", "/auth/accessdenied").permitAll();
+        http.authorizeRequests().antMatchers("/auth/login", "/auth/register", "/auth/refresh", "/auth/accessdenied", "/auth/logout").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole("OWNER");
-        http.authorizeRequests().anyRequest()
-                 .authenticated()
-        .and().exceptionHandling().accessDeniedPage("/auth/accessdenied");
+        http.authorizeRequests().anyRequest().authenticated();
+        http.exceptionHandling().accessDeniedPage("/auth/accessdenied");
+        http.logout().logoutUrl("/auth/logout");
          http.addFilterBefore(new ConfigAutorizacionFilter(), UsernamePasswordAuthenticationFilter.class);
     }
     @Bean

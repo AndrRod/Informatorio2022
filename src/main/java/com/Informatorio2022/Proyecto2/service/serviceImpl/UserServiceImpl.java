@@ -49,6 +49,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserRepository userRepository;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
 
 
     private PasswordEncoder passwordEncoder;
@@ -86,6 +89,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userMapper.userEntityToPartDto(userRepository.save(user.get()));
     }
     @Override
+    public User findUserByEmail(String email) {
+        return Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new NotFoundException(messageResum.message("user.email.not.found", email)));
+    }
+    @Override
     public void updateUserRol(Long idUser, String roleName) {
         Optional<User> user = Optional.ofNullable(userRepository.findById(idUser).orElseThrow(() -> new NotFoundException(messageResum.message("user.id.not.found", String.valueOf(idUser)))));
         if(user.get().getRole().toString().equals(roleName)) throw new BadRequestException(messageResum.message("user.has.that.role", roleName));
@@ -93,8 +100,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         catch (Exception e) {throw new NotFoundException(messageResum.message("user.rol.not.found", roleName));}
     }
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     @Override
     public Authentication authenticationFilter(String email, String password) throws AuthenticationException {
@@ -122,6 +127,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .sign(algorithm);
         return new UserLoginResponseDto(user.getEmail(), user.getRole(), access_token, update_token);
     }
+
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new NotFoundException(messageResum.message("user.email.not.found", email)));
