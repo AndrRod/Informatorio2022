@@ -28,7 +28,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/auth/login", "/auth/register", "/auth/refresh", "/auth/accessdenied", "/auth/logout", "/auth/logoutsuccess").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole("OWNER");
         http.authorizeRequests().anyRequest().authenticated();
-        http.formLogin().loginPage("/auth/login").permitAll();
         http.logout().logoutUrl("/auth/logout")
                 .logoutSuccessUrl("/auth/logoutsuccess")
                 .deleteCookies()

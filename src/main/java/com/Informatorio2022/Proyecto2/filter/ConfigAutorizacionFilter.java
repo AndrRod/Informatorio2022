@@ -30,11 +30,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 public class ConfigAutorizacionFilter extends OncePerRequestFilter {
-        @Autowired
-        private MessageResum messageResum;
-        @Override
+         @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals("/users/login") || request.getServletPath().equals("/users/login/refresh")){
+        if(request.getServletPath().equals("/auth/login") || request.getServletPath().equals("/auth/refresh")){
             filterChain.doFilter(request, response);
         }else{
             String autorizacionHeader = request.getHeader(AUTHORIZATION);
@@ -60,7 +58,9 @@ public class ConfigAutorizacionFilter extends OncePerRequestFilter {
                     new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo(exception.getMessage(), 403, request.getRequestURI()));
                 }
             }else {
-                filterChain.doFilter(request, response);
+                response.setStatus(FORBIDDEN.value());
+                response.setContentType(APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo("The resource cannot be accessed, because you arn't logged in or you don't hase use the token.", 403, request.getRequestURI()));
             }
         }
     }
