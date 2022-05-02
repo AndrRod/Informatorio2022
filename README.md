@@ -106,6 +106,10 @@ Acceder a un path sin token
 
 ![img_11.png](img_11.png)
 
+
+
+Los tokens tienen un periodo de duración (access_token = 10 minutos y refresh_token = 30 minutos). 
+
 Token vencido:
 
 ![img_8.png](img_8.png)
