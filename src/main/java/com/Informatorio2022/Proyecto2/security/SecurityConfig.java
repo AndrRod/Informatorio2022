@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -30,7 +29,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/auth/login", "/auth/register", "/auth/refresh", "/auth/accessdenied", "/auth/logout", "/auth/logoutsuccess").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole("OWNER");
         http.authorizeRequests().anyRequest().authenticated();
-
         http.logout().logoutUrl("/auth/logout")
                 .logoutSuccessUrl("/auth/logoutsuccess")
                 .deleteCookies()
