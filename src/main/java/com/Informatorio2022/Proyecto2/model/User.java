@@ -34,7 +34,6 @@ public class User {
     @NotNull(message = "can't be empty or null")
     @Size(min = 8, message = "The password must be at least 8 characters")
     private String password;
-//    @NotNull(message = "can't be empty or null")
     private Role role = Role.USER;
     @CreationTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")

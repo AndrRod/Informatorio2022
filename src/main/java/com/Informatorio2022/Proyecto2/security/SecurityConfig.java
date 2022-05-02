@@ -25,10 +25,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.authorizeRequests().antMatchers("/auth/login", "/auth/register", "/auth/refresh", "/auth/accessdenied", "/auth/logout", "/auth/logoutsuccess").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole("OWNER");
         http.authorizeRequests().anyRequest().authenticated();
+        http.formLogin().loginPage("/auth/login").permitAll();
         http.logout().logoutUrl("/auth/logout")
                 .logoutSuccessUrl("/auth/logoutsuccess")
                 .deleteCookies()
@@ -36,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .permitAll();
         http.exceptionHandling().accessDeniedPage("/auth/accessdenied");
+        http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.addFilterBefore(new ConfigAutorizacionFilter(), UsernamePasswordAuthenticationFilter.class);
     }
     @Bean

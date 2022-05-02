@@ -51,9 +51,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserMapper userMapper;
     @Autowired
     private AuthenticationManager authenticationManager;
-
-
-
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Override
     public UserCompleteDto findUserById(Long id) {
@@ -63,9 +61,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserPartDto createUser(UserPartDto userPartDto) {
         if (userRepository.existsByEmail(userPartDto.getEmail()))throw new BadRequestException(messageResum.message("email.already.exist", userPartDto.getEmail()));
-        User user = userRepository.save(userMapper.dtoUserPartCreateToEntity(userPartDto));
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userMapper.userEntityToPartDto(user);
+        User user = userMapper.dtoUserPartCreateToEntity(userPartDto);
+        user.setPassword(passwordEncoder.encode(userPartDto.getPassword()));
+        return userMapper.userEntityToPartDto(userRepository.save(user));
     }
 
     @Override
