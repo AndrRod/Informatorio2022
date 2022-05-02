@@ -12,7 +12,7 @@ Proyecto API REST - El objeto es crear un proyecto escalable, donde se utilizan 
 - 👉 Las rutas siguen el patrón REST
 - 👉 Librería Spring Security
 - 👉 Encriptación de contraseñas (PasswordEncoder)
-- 👉 Utilización de tokens para validar rol de usuario a fin de que pueda utilizar determinados paths (access_token)  y refresh tokens para actualizar el periodo de vide del token (refresh_token).
+- 👉 Utilización de tokens para validar rol de usuario a fin de que pueda utilizar determinados paths (access_token)  y refresh tokens para actualizar el periodo de vida del token (refresh_token).
 - 👉 Manejo de Excepciones (Carpeta exception - excepciones particulares reutilizables - manejo general de excepciones)
 - 👉 Manejo de Mensajes de respuestas (Clases reutilizables, properties exclusivos para mensajes, MessageSource)
 - 👉 Paginación (Mediante una clase reutilizable llamada PaginationMessage).
@@ -23,7 +23,7 @@ Proyecto API REST - El objeto es crear un proyecto escalable, donde se utilizan 
 
 ### Para ejecutar la API 👇🏻
 
-* Descargar el [Proyecto](https://github.com/AndrRod/Informatorio2022/archive/refs/heads/main.zip) o [Colarlo](https://github.com/AndrRod/Informatorio2022.git) .
+* Descargar el [Proyecto](https://github.com/AndrRod/Informatorio2022/archive/refs/heads/main.zip) o [Clonarlo](https://github.com/AndrRod/Informatorio2022.git) .
 * En la consola se dirige a la carpeta del proyecto (```  /Informatorio2022-main ``` ).
 * Ejecuta los siguientes comandos: ``` mvn clean install ```  y luego ``` mvn spring-boot:run ``` .
 * Pruebe ejecutar los endpoints, siguiendo la documentación de la API detallada a continuación.
@@ -112,7 +112,18 @@ Token vencido:
 
 Actualización de token:
 
-![img_9.png](img_9.png)
+Post:
+
+        http://localhost:8080/auth/refresh
+
+Ejemplo:
+
+        {
+            "refresh_token": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyb2RyaWd1ZXphLmZlZGVyYWNpb25AZ21haWwuY29tIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2F1dGgvbG9naW4iLCJleHAiOjE2NTE1MTU4NjB9.cFGlQOVZPZKPehbYePopqa3dkbMVUGE29Nn9zCVriAM"
+        }
+Respuesta:
+
+![img_12.png](img_12.png)
 
 ### POST (actualizar rol de usuario)
 
