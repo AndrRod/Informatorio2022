@@ -49,12 +49,12 @@ public class UserAuthController {
         return ResponseEntity.ok(userService.userLogin(user.getEmail(), user.getPassword(), request));
     }
     @GetMapping("/accessdenied")
-    public ResponseEntity<MessageInfo> accesDenied (WebRequest request){
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageInfo(messageResum.message("user.not.access", null), 403, ((ServletWebRequest)request).getRequest().getRequestURI()));
+    public ResponseEntity<MessageInfo> accesDenied (HttpServletRequest request){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageInfo(messageResum.message("user.not.access", null), 403, request.getRequestURI()));
     }
     @GetMapping("/logoutsuccess")
-    public ResponseEntity<MessageInfo> logout (WebRequest request){
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MessageInfo(messageResum.message("user.logout", null), 202, ((ServletWebRequest)request).getRequest().getRequestURI()));
+    public ResponseEntity<MessageInfo> logout (HttpServletRequest request){
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MessageInfo(messageResum.message("user.logout", null), 202, request.getRequestURI()));
     }
     @GetMapping("/refresh")
     public void refreshToken(@RequestBody refreshTokenForm form, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -73,7 +73,7 @@ public class UserAuthController {
                         .withClaim("role", Optional.ofNullable(user.getRole().getAuthority()).stream().collect(Collectors.toList()))
                         .sign(algorithm);
                 response.setContentType(APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(),  new HashMap<>(){{put("access_token", acceso_token); put("update_token", refresh_token);}});
+                new ObjectMapper().writeValue(response.getOutputStream(),  new HashMap<>(){{put("message", "the user " + user.getEmail()+ " refresh the token succesfully"); put("access_token", acceso_token); put("update_token", refresh_token);}});
             }catch (Exception exception){
                 response.setStatus(FORBIDDEN.value());
                 response.setContentType(APPLICATION_JSON_VALUE);
@@ -82,7 +82,7 @@ public class UserAuthController {
         }else {
             response.setStatus(FORBIDDEN.value());
             response.setContentType(APPLICATION_JSON_VALUE);
-            new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo(messageResum.message("token.refresh.error", null), 402, request.getRequestURI()));
+            new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo(messageResum.message("token.refresh.error", null), 403, request.getRequestURI()));
         }
     }
 }

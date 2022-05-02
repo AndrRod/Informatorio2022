@@ -69,17 +69,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public MessagePag findPageBy10Users(int page, WebRequest request) {
+    public MessagePag findPageBy10Users(int page, HttpServletRequest request) {
         Page<User> userPage = userRepository.findAll(PageRequest.of(page, SIZE_TEN));
         return paginationMessage.messageInfo(userPage, userMapper.listUserCompleteToListDto(userPage.getContent()), request);
     }
 
     @Override
     public UserPartDto updateUser(Long id, UserPartDto dto) {
-        if (userRepository.findById(id).get() == userRepository.findByEmail(dto.getEmail())) dto.setEmail(null);
-        if (userRepository.existsByEmail(dto.getEmail()))
-            throw new BadRequestException(messageResum.message("email.already.exist", dto.getEmail()));
         Optional<User> user = Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new NotFoundException(messageResum.message("user.id.not.found", String.valueOf(id)))));
+        if (user.get() == userRepository.findByEmail(dto.getEmail())) dto.setEmail(null);
+        if (userRepository.existsByEmail(dto.getEmail()))throw new BadRequestException(messageResum.message("email.already.exist", dto.getEmail()));
         user.stream().forEach((u) -> {
             if (dto.getFirstName() != null) u.setFirstName(dto.getFirstName());
             if (dto.getLastName() != null) u.setLastName(dto.getLastName());

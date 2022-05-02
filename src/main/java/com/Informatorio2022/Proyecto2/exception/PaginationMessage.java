@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,8 +17,8 @@ import java.util.List;
 public class PaginationMessage {
     @Autowired
     private MessageResum messageResum;
-    public MessagePag messageInfo(Page page, List<Object> dtoPageList, WebRequest request){
-        String path = ((ServletWebRequest)request).getRequest().getRequestURI();
+    public MessagePag messageInfo(Page page, List<Object> dtoPageList, HttpServletRequest request){
+        String path = request.getRequestURI();
         List <Object> content = dtoPageList;
         String nextPath = messageResum.message("page.dont.have.next", null);
         String prevPath = messageResum.message("page.dont.have.prev", null);

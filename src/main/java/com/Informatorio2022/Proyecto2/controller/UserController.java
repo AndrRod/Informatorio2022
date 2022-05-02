@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<MessagePag> getUserById(@RequestParam(value = "page", required = true) String page, WebRequest request){
+    public ResponseEntity<MessagePag> getUserById(@RequestParam(value = "page", required = true) String page, HttpServletRequest request){
         return ResponseEntity.ok(userService.findPageBy10Users(Integer.valueOf(page), request));
     }
     @PutMapping("/{id}")
@@ -38,9 +38,9 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(Long.valueOf(id), userPartDto));
     }
     @PutMapping("/role/{id}")
-    public ResponseEntity<MessageInfo> userUpdateRole(@PathVariable String id, @RequestBody AddRoleToUserForm role, WebRequest request){
+    public ResponseEntity<MessageInfo> userUpdateRole(@PathVariable String id, @RequestBody AddRoleToUserForm role, HttpServletRequest request){
         userService.updateUserRol(Long.valueOf(id), role.getRoleName());
-        return ResponseEntity.ok(new MessageInfo(messageResum.message("user.has.update.role", role.getRoleName()), 200, ((ServletWebRequest)request).getRequest().getRequestURI()));
+        return ResponseEntity.ok(new MessageInfo(messageResum.message("user.has.update.role", role.getRoleName()), 200, request.getRequestURI()));
     }
 
 }
