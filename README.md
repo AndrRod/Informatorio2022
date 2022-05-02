@@ -93,7 +93,7 @@ Ejemplo login con error:
 ![img_3.png](img_3.png)
 
 ### TOKENS
-Para acceder a cualquier path que requiera rol ("ROLE_USER" o "ROLE_ADMIN"), una vez logeado, se debe ingresar el token.
+Para acceder a cualquier path que requiera rol ("ROLE_USER", "ROLE_OWNER" O "ROLE_COLLABORATOR), una vez logeado, se debe ingresar el token.
 El token se encuentra codificado y está compuesto por tres partes como se ve en la imagen:
 
 ![img_5.png](img_5.png)
