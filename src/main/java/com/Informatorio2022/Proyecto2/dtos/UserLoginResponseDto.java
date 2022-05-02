@@ -10,6 +10,6 @@ import lombok.Setter;
 public class UserLoginResponseDto {
     private String email;
     private Role role;
-    private String inputToken;
-    private String updateToken;
+    private String accessToken;
+    private String refreshToken;
 }

@@ -127,8 +127,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .sign(algorithm);
         return new UserLoginResponseDto(user.getEmail(), user.getRole(), access_token, update_token);
     }
-
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new NotFoundException(messageResum.message("user.email.not.found", email)));

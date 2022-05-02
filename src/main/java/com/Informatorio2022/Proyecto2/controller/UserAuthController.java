@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -51,28 +52,28 @@ public class UserAuthController {
     public ResponseEntity<MessageInfo> accesDenied (WebRequest request){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageInfo(messageResum.message("user.not.access", null), 403, ((ServletWebRequest)request).getRequest().getRequestURI()));
     }
-    @GetMapping("/logout")
+    @GetMapping("/logoutsuccess")
     public ResponseEntity<MessageInfo> logout (WebRequest request){
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MessageInfo(messageResum.message("user.logout", null), 402, ((ServletWebRequest)request).getRequest().getRequestURI()));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MessageInfo(messageResum.message("user.logout", null), 202, ((ServletWebRequest)request).getRequest().getRequestURI()));
     }
     @GetMapping("/refresh")
     public void refreshToken(@RequestBody refreshTokenForm form, HttpServletRequest request, HttpServletResponse response) throws IOException {
         if(form != null && form.getRefresh_token().startsWith("Bearer ")){
             try {
-                String actualizar_token = form.getRefresh_token().substring("Bearer ".length());
+                String refresh_token = form.getRefresh_token().substring("Bearer ".length());
                 Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
                 JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(actualizar_token);
+                DecodedJWT decodedJWT = verifier.verify(refresh_token);
                 String email = decodedJWT.getSubject();
                 User user = userService.findUserByEmail(email);
                 String acceso_token = JWT.create()
                         .withSubject(user.getEmail())
                         .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000)) // 10 minutos
                         .withIssuer(request.getRequestURL().toString())
-                        .withClaim("role", user.getRole().getAuthority())
+                        .withClaim("role", Optional.ofNullable(user.getRole().getAuthority()).stream().collect(Collectors.toList()))
                         .sign(algorithm);
                 response.setContentType(APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(),  new HashMap<>(){{put("access_token", acceso_token); put("update_token", actualizar_token);}});
+                new ObjectMapper().writeValue(response.getOutputStream(),  new HashMap<>(){{put("access_token", acceso_token); put("update_token", refresh_token);}});
             }catch (Exception exception){
                 response.setStatus(FORBIDDEN.value());
                 response.setContentType(APPLICATION_JSON_VALUE);
@@ -81,7 +82,7 @@ public class UserAuthController {
         }else {
             response.setStatus(FORBIDDEN.value());
             response.setContentType(APPLICATION_JSON_VALUE);
-            new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo(messageResum.message("token.refresh.error", null), 403, request.getRequestURI()));
+            new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo(messageResum.message("token.refresh.error", null), 402, request.getRequestURI()));
         }
     }
 }

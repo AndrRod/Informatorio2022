@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -31,7 +30,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 public class ConfigAutorizacionFilter extends OncePerRequestFilter {
-    @Override
+        @Autowired
+        private MessageResum messageResum;
+        @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if(request.getServletPath().equals("/users/login") || request.getServletPath().equals("/users/login/refresh")){
             filterChain.doFilter(request, response);
