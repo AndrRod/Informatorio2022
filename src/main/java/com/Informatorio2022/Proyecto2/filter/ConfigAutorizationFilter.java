@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -25,10 +26,11 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
-public class ConfigAutorizacionFilter extends OncePerRequestFilter {
+public class ConfigAutorizationFilter extends OncePerRequestFilter {
          @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals("/auth/login") || request.getServletPath().equals("/auth/refresh")){
+         List listPaths = List.of("/auth/login", "/auth/refresh", "/auth/register", "/auth/accessdenied", "/auth/logout", "/auth/logoutsuccess");
+        if(isEqualsPath(listPaths, request)){
             filterChain.doFilter(request, response);
         }else{
             String autorizacionHeader = request.getHeader(AUTHORIZATION);
@@ -41,9 +43,7 @@ public class ConfigAutorizacionFilter extends OncePerRequestFilter {
                     String email = decodedJWT.getSubject();
                     String[] roles = decodedJWT.getClaim("role").asArray(String.class);
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                    stream(roles).forEach(role-> {
-                        authorities.add(new SimpleGrantedAuthority(role));
-                    });
+                    stream(roles).forEach(role-> {authorities.add(new SimpleGrantedAuthority(role));});
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null, authorities);
 //                    aca determina que que recursos tiene acceso dep el rol y usuario
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
@@ -59,5 +59,8 @@ public class ConfigAutorizacionFilter extends OncePerRequestFilter {
                 new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo("The resource cannot be accessed, because you arn't logged in or you don't hase use the token.", 403, request.getRequestURI()));
             }
         }
+    }
+    boolean isEqualsPath(List<String> path, HttpServletRequest request){
+        return path.stream().anyMatch(p-> request.getServletPath().equals(p));
     }
 }

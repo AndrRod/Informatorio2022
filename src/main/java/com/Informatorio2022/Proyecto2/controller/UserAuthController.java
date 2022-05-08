@@ -1,8 +1,6 @@
 package com.Informatorio2022.Proyecto2.controller;
-
 import com.Informatorio2022.Proyecto2.dtos.UserLoginResponseDto;
 import com.Informatorio2022.Proyecto2.dtos.UserPartDto;
-import com.Informatorio2022.Proyecto2.exception.BadRequestException;
 import com.Informatorio2022.Proyecto2.exception.MessageInfo;
 import com.Informatorio2022.Proyecto2.exception.MessageResum;
 import com.Informatorio2022.Proyecto2.model.User;
@@ -17,20 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.ServletWebRequest;
-import org.springframework.web.context.request.WebRequest;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
+ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController

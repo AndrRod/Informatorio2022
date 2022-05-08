@@ -7,7 +7,6 @@ import com.Informatorio2022.Proyecto2.exception.MessagePag;
 import com.Informatorio2022.Proyecto2.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,3 +20,4 @@ public interface UserService {
     UserLoginResponseDto userLogin(String email, String password, HttpServletRequest request);
     User findUserByEmail(String email);
 }
+

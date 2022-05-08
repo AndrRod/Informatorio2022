@@ -27,6 +27,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.WebRequest;
 
@@ -89,6 +90,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User findUserByEmail(String email) {
         return Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new NotFoundException(messageResum.message("user.email.not.found", email)));
     }
+
     @Override
     public void updateUserRol(Long idUser, String roleName) {
         Optional<User> user = Optional.ofNullable(userRepository.findById(idUser).orElseThrow(() -> new NotFoundException(messageResum.message("user.id.not.found", String.valueOf(idUser)))));
@@ -104,6 +106,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Authentication autenticacionFilter = authenticationManager.authenticate(authenticationToken);
         return autenticacionFilter;
     }
+
     @Override
     public UserLoginResponseDto userLogin(String email, String password, HttpServletRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -127,7 +130,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new NotFoundException(messageResum.message("user.email.not.found", email)));
-        Collection<SimpleGrantedAuthority> autorizaciones = Collections.singleton(new SimpleGrantedAuthority(user.getRole().getAuthority()));
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), autorizaciones);
+        Collection<SimpleGrantedAuthority> authorizations = Collections.singleton(new SimpleGrantedAuthority(user.getRole().getAuthority()));
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorizations);
     }
 }
