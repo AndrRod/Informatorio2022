@@ -39,12 +39,11 @@ public class UserController {
         userService.updateUserRol(Long.valueOf(id), role.getRoleName());
         return ResponseEntity.ok(new MessageInfo(messageResum.message("user.has.update.role", role.getRoleName()), 200, request.getRequestURI()));
     }
-//    microservice
-//    @GetMapping("/micro")
-//    public ResponseEntity<List<User>> getUserDto(HttpServletRequest request){
-////        if(userService.getUsers(id, request) == null) throw new NotFoundException("usuario no encontrado");
-//        return ResponseEntity.ok(userService.getUsers(request));
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MessageInfo> deleteUserById(@PathVariable Long id, HttpServletRequest request){
+        userService.deleteUserById(id);
+        return ResponseEntity.ok(new MessageInfo(messageResum.message("user.delete.ok", String.valueOf(id)), 200, request.getRequestURI()));
+    }
 }
 @Data
 class AddRoleToUserForm{

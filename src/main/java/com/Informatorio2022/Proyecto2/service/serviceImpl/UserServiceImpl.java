@@ -32,8 +32,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -49,9 +47,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Transactional
 @Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
-
     private static final int SIZE_TEN = 10;
-
     @Autowired
     private MessageResum messageResum;
     @Autowired
@@ -64,21 +60,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private PasswordEncoder passwordEncoder;
-// rest template para hacer la relacion entre microservicios, una clase para comunicar los ms
-//    @Autowired
-//    private RestTemplate restTemplate;
-
-//    @Override
-//    public List<User> getUsers(HttpServletRequest request){
-//        System.out.println(request.getRequestURL().toString());
-//    return restTemplate.getForObject("http://localhost:8080/users/micro/", List.class);
-//    }
-//    microservis arriba
     @Override
     public UserCompleteDto findUserById(Long id) {
         return userMapper.userEntityToCompleteDto(Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new NotFoundException(messageResum.message("user.id.not.found", String.valueOf(id))))).get());
     }
-
     @Override
     public UserPartDto createUser(UserPartDto userPartDto) {
         if (userRepository.existsByEmail(userPartDto.getEmail()))throw new BadRequestException(messageResum.message("email.already.exist", userPartDto.getEmail()));
@@ -87,13 +72,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setPassword(passwordEncoder.encode(userPartDto.getPassword()));
         return userMapper.userEntityToPartDto(userRepository.save(user));
     }
-
     @Override
     public MessagePag findPageBy10Users(int page, HttpServletRequest request) {
         Page<User> userPage = userRepository.findAll(PageRequest.of(page, SIZE_TEN));
-        return paginationMessage.messageInfo(userPage, userMapper.listUserCompleteToListDto(userPage.getContent()), request);
+        return paginationMessage.messageInfo(userPage, userMapper.listUsersToListDtoPart(userPage.getContent()), request);
     }
-
     @Override
     public UserPartDto updateUser(Long id, UserPartDto dto) {
         Optional<User> user = Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new NotFoundException(messageResum.message("user.id.not.found", String.valueOf(id)))));
@@ -111,7 +94,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User findUserByEmail(String email) {
         return Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new NotFoundException(messageResum.message("user.email.not.found", email)));
     }
-
     @Override
     public void updateUserRol(Long idUser, String roleName) {
         Optional<User> user = Optional.ofNullable(userRepository.findById(idUser).orElseThrow(() -> new NotFoundException(messageResum.message("user.id.not.found", String.valueOf(idUser)))));
@@ -119,8 +101,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         try {user.get().setRole(Role.valueOf(roleName));}
         catch (Exception e) {throw new NotFoundException(messageResum.message("user.rol.not.found", roleName));}
     }
-
-
     @Override
     public Authentication authenticationFilter(String email, String password) throws AuthenticationException {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
@@ -179,5 +159,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             response.setContentType(APPLICATION_JSON_VALUE);
             new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo(exception.getMessage(), 403, request.getRequestURI()));
         }
+    }
+    @Override
+    public void deleteUserById(Long id){
+        userRepository.delete(userRepository.findById(id).orElseThrow(()-> new NotFoundException(messageResum.message("user.id.not.found", String.valueOf(id)))));
     }
 }

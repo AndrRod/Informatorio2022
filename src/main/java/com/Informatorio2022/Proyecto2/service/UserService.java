@@ -23,7 +23,7 @@ public interface UserService {
     Authentication authenticationFilter(String email, String password) throws AuthenticationException;
     UserLoginResponseDto userLogin(String email, String password, HttpServletRequest request);
     User findUserByEmail(String email);
-//    List<User> getUsers(HttpServletRequest request);
     void refreshToken(RefreshTokenForm form, HttpServletRequest request, HttpServletResponse response) throws IOException;
+    void deleteUserById(Long id);
 }
 
