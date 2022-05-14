@@ -43,8 +43,8 @@ public class ExceptHandler {
     public ResponseEntity<MessageInfo> httpRequestMethodNotSupportedException(HttpServletRequest request) {
         return new ResponseEntity<>(new MessageInfo(messageResum.message("user.method.not.access", null), HttpStatus.FORBIDDEN.value(), request.getRequestURI()), HttpStatus.FORBIDDEN);
     }
-//    @ExceptionHandler({HttpMessageNotReadableException.class})
-//    public ResponseEntity<MessageInfo> httpMessageNotReadableException(HttpServletRequest request) {
-//        return new ResponseEntity<>(new MessageInfo(messageResum.message("param.content.error", null), HttpStatus.BAD_REQUEST.value(), request.getRequestURI()), HttpStatus.BAD_REQUEST);
-//    }
+    @ExceptionHandler({HttpMessageNotReadableException.class})
+    public ResponseEntity<MessageInfo> httpMessageNotReadableException(HttpServletRequest request) {
+        return new ResponseEntity<>(new MessageInfo(messageResum.message("param.content.error", null), HttpStatus.BAD_REQUEST.value(), request.getRequestURI()), HttpStatus.BAD_REQUEST);
+    }
 }

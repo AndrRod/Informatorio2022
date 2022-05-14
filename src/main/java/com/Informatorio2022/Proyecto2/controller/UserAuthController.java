@@ -51,6 +51,7 @@ public class UserAuthController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MessageInfo(messageResum.message("user.logout", null), 202, request.getRequestURI()));
     }
     @PostMapping("/refresh")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void refreshToken(@RequestBody RefreshTokenForm form, HttpServletRequest request, HttpServletResponse response) throws IOException {
         userService.refreshToken(form, request, response);
     }
