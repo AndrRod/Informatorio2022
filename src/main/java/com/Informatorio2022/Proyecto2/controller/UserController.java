@@ -4,12 +4,15 @@ import com.Informatorio2022.Proyecto2.dtos.UserPartDto;
 import com.Informatorio2022.Proyecto2.exception.MessageInfo;
 import com.Informatorio2022.Proyecto2.exception.MessagePag;
 import com.Informatorio2022.Proyecto2.exception.MessageResum;
+import com.Informatorio2022.Proyecto2.exception.NotFoundException;
+import com.Informatorio2022.Proyecto2.model.User;
 import com.Informatorio2022.Proyecto2.service.UserService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -36,6 +39,12 @@ public class UserController {
         userService.updateUserRol(Long.valueOf(id), role.getRoleName());
         return ResponseEntity.ok(new MessageInfo(messageResum.message("user.has.update.role", role.getRoleName()), 200, request.getRequestURI()));
     }
+//    microservice
+//    @GetMapping("/micro")
+//    public ResponseEntity<List<User>> getUserDto(HttpServletRequest request){
+////        if(userService.getUsers(id, request) == null) throw new NotFoundException("usuario no encontrado");
+//        return ResponseEntity.ok(userService.getUsers(request));
+//    }
 }
 @Data
 class AddRoleToUserForm{

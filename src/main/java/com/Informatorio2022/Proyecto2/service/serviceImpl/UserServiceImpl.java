@@ -1,5 +1,6 @@
 package com.Informatorio2022.Proyecto2.service.serviceImpl;
 
+import com.Informatorio2022.Proyecto2.dtos.RefreshTokenForm;
 import com.Informatorio2022.Proyecto2.dtos.UserCompleteDto;
 import com.Informatorio2022.Proyecto2.dtos.UserLoginResponseDto;
 import com.Informatorio2022.Proyecto2.dtos.UserPartDto;
@@ -10,7 +11,10 @@ import com.Informatorio2022.Proyecto2.model.User;
 import com.Informatorio2022.Proyecto2.repository.UserRepository;
 import com.Informatorio2022.Proyecto2.service.UserService;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +31,19 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -42,6 +51,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private static final int SIZE_TEN = 10;
+
     @Autowired
     private MessageResum messageResum;
     @Autowired
@@ -54,6 +64,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private PasswordEncoder passwordEncoder;
+// rest template para hacer la relacion entre microservicios, una clase para comunicar los ms
+//    @Autowired
+//    private RestTemplate restTemplate;
+
+//    @Override
+//    public List<User> getUsers(HttpServletRequest request){
+//        System.out.println(request.getRequestURL().toString());
+//    return restTemplate.getForObject("http://localhost:8080/users/micro/", List.class);
+//    }
+//    microservis arriba
     @Override
     public UserCompleteDto findUserById(Long id) {
         return userMapper.userEntityToCompleteDto(Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new NotFoundException(messageResum.message("user.id.not.found", String.valueOf(id))))).get());
@@ -62,6 +82,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserPartDto createUser(UserPartDto userPartDto) {
         if (userRepository.existsByEmail(userPartDto.getEmail()))throw new BadRequestException(messageResum.message("email.already.exist", userPartDto.getEmail()));
+        if(userPartDto.getPassword()== null) throw new BadRequestException(messageResum.message("password.not.present", userPartDto.getEmail()));
         User user = userMapper.dtoUserPartCreateToEntity(userPartDto);
         user.setPassword(passwordEncoder.encode(userPartDto.getPassword()));
         return userMapper.userEntityToPartDto(userRepository.save(user));
@@ -111,6 +132,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserLoginResponseDto userLogin(String email, String password, HttpServletRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new NotFoundException(messageResum.message("user.email.not.found", email)));
+        if(password == null) throw new BadRequestException(messageResum.message("password.error",null));
         if(!passwordEncoder.matches(password, user.getPassword())) throw new NotFoundException(messageResum.message("user.password.error",null));
         org.springframework.security.core.userdetails.User userAut = (org.springframework.security.core.userdetails.User) authenticationFilter(email, password).getPrincipal();
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
@@ -132,5 +154,30 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new NotFoundException(messageResum.message("user.email.not.found", email)));
         Collection<SimpleGrantedAuthority> authorizations = Collections.singleton(new SimpleGrantedAuthority(user.getRole().getAuthority()));
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorizations);
+    }
+
+    @Override
+    public void refreshToken(RefreshTokenForm form, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if(form.getRefresh_token() == null || !form.getRefresh_token().startsWith("Bearer ")) throw new BadRequestException(messageResum.message("token.refresh.error", null));
+        try {
+            String refresh_token = form.getRefresh_token().substring("Bearer ".length());
+            Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+            JWTVerifier verifier = JWT.require(algorithm).build();
+            DecodedJWT decodedJWT = verifier.verify(refresh_token);
+            String email = decodedJWT.getSubject();
+            User user = findUserByEmail(email);
+            String acceso_token = JWT.create()
+                    .withSubject(user.getEmail())
+                    .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000)) // 10 minutos
+                    .withIssuer(request.getRequestURL().toString())
+                    .withClaim("role", Optional.ofNullable(user.getRole().getAuthority()).stream().collect(Collectors.toList()))
+                    .sign(algorithm);
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(),  new HashMap<>(){{put("message", "the user " + user.getEmail()+ " refresh the token succesfully"); put("access_token", acceso_token); put("update_token", refresh_token);}});
+        }catch (Exception exception){
+            response.setStatus(FORBIDDEN.value());
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo(exception.getMessage(), 403, request.getRequestURI()));
+        }
     }
 }

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -30,7 +31,7 @@ public class ConfigAutorizationFilter extends OncePerRequestFilter {
          @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
          List listPaths = List.of("/auth/login", "/auth/refresh", "/auth/register", "/auth/accessdenied", "/auth/logout", "/auth/logoutsuccess");
-        if(isEqualsPath(listPaths, request)){
+        if(listPaths.contains(request.getServletPath())){
             filterChain.doFilter(request, response);
         }else{
             String autorizacionHeader = request.getHeader(AUTHORIZATION);
@@ -40,7 +41,7 @@ public class ConfigAutorizationFilter extends OncePerRequestFilter {
                     Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
                     JWTVerifier verifier = JWT.require(algorithm).build();
                     DecodedJWT decodedJWT = verifier.verify(token);
-                    String email = decodedJWT.getSubject();
+                    String email = decodedJWT.getSubject();                    
                     String[] roles = decodedJWT.getClaim("role").asArray(String.class);
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     stream(roles).forEach(role-> {authorities.add(new SimpleGrantedAuthority(role));});
@@ -59,8 +60,5 @@ public class ConfigAutorizationFilter extends OncePerRequestFilter {
                 new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo("The resource cannot be accessed, because you arn't logged in or you don't hase use the token.", 403, request.getRequestURI()));
             }
         }
-    }
-    boolean isEqualsPath(List<String> path, HttpServletRequest request){
-        return path.stream().anyMatch(p-> request.getServletPath().equals(p));
     }
 }

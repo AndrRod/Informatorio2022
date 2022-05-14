@@ -1,6 +1,8 @@
 package com.Informatorio2022.Proyecto2.controller;
+import com.Informatorio2022.Proyecto2.dtos.RefreshTokenForm;
 import com.Informatorio2022.Proyecto2.dtos.UserLoginResponseDto;
 import com.Informatorio2022.Proyecto2.dtos.UserPartDto;
+import com.Informatorio2022.Proyecto2.exception.BadRequestException;
 import com.Informatorio2022.Proyecto2.exception.MessageInfo;
 import com.Informatorio2022.Proyecto2.exception.MessageResum;
 import com.Informatorio2022.Proyecto2.model.User;
@@ -49,33 +51,8 @@ public class UserAuthController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MessageInfo(messageResum.message("user.logout", null), 202, request.getRequestURI()));
     }
     @PostMapping("/refresh")
-    public void refreshToken(@RequestBody refreshTokenForm form, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if(form != null && form.getRefresh_token().startsWith("Bearer ")){
-            try {
-                String refresh_token = form.getRefresh_token().substring("Bearer ".length());
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(refresh_token);
-                String email = decodedJWT.getSubject();
-                User user = userService.findUserByEmail(email);
-                String acceso_token = JWT.create()
-                        .withSubject(user.getEmail())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000)) // 10 minutos
-                        .withIssuer(request.getRequestURL().toString())
-                        .withClaim("role", Optional.ofNullable(user.getRole().getAuthority()).stream().collect(Collectors.toList()))
-                        .sign(algorithm);
-                response.setContentType(APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(),  new HashMap<>(){{put("message", "the user " + user.getEmail()+ " refresh the token succesfully"); put("access_token", acceso_token); put("update_token", refresh_token);}});
-            }catch (Exception exception){
-                response.setStatus(FORBIDDEN.value());
-                response.setContentType(APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo(exception.getMessage(), 403, request.getRequestURI()));
-            }
-        }else {
-            response.setStatus(FORBIDDEN.value());
-            response.setContentType(APPLICATION_JSON_VALUE);
-            new ObjectMapper().writeValue(response.getOutputStream(), new MessageInfo(messageResum.message("token.refresh.error", null), 403, request.getRequestURI()));
-        }
+    public void refreshToken(@RequestBody RefreshTokenForm form, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        userService.refreshToken(form, request, response);
     }
 }
 @Data
@@ -83,7 +60,4 @@ class LoginForm{
     private String email;
     private String password;
 }
-@Data
-class refreshTokenForm{
-    private String refresh_token;
-}
+
