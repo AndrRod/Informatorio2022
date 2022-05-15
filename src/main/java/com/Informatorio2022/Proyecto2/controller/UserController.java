@@ -40,9 +40,9 @@ public class UserController {
         return ResponseEntity.ok(new MessageInfo(messageResum.message("user.has.update.role", role.getRoleName()), 200, request.getRequestURI()));
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<MessageInfo> deleteUserById(@PathVariable Long id, HttpServletRequest request){
-        userService.deleteUserById(id);
-        return ResponseEntity.ok(new MessageInfo(messageResum.message("user.delete.ok", String.valueOf(id)), 200, request.getRequestURI()));
+    public ResponseEntity<MessageInfo> deleteUserById(@PathVariable String id, HttpServletRequest request){
+        userService.deleteUserById(Long.valueOf(id));
+        return ResponseEntity.ok(new MessageInfo(messageResum.message("user.delete.ok", id), 200, request.getRequestURI()));
     }
 }
 @Data

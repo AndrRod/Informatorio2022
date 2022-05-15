@@ -25,8 +25,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeRequests().antMatchers("/auth/login", "/auth/register", "/auth/refresh", "/auth/accessdenied", "/auth/logout", "/auth/logoutsuccess").permitAll();
-//        http.authorizeRequests().antMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole("OWNER");
-        http.authorizeRequests().anyRequest().permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/users/{id}", "/users").hasAnyRole("OWNER");
+        http.authorizeRequests().antMatchers(HttpMethod.PUT, "/users/{id}", "/users/role/{id}").hasAnyRole("OWNER");
+        http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/users/{id}").hasAnyRole("OWNER");
+        http.authorizeRequests().anyRequest().authenticated();
         http.logout()
                 .logoutUrl("/auth/logout")
                 .invalidateHttpSession(true)
@@ -35,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/auth/logoutsuccess").permitAll();
         http.exceptionHandling().accessDeniedPage("/auth/accessdenied");
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-//        http.addFilterBefore(new ConfigAutorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new ConfigAutorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
     @Bean
     @Override

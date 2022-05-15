@@ -2,16 +2,9 @@ package com.Informatorio2022.Proyecto2.controller;
 import com.Informatorio2022.Proyecto2.dtos.RefreshTokenForm;
 import com.Informatorio2022.Proyecto2.dtos.UserLoginResponseDto;
 import com.Informatorio2022.Proyecto2.dtos.UserPartDto;
-import com.Informatorio2022.Proyecto2.exception.BadRequestException;
 import com.Informatorio2022.Proyecto2.exception.MessageInfo;
 import com.Informatorio2022.Proyecto2.exception.MessageResum;
-import com.Informatorio2022.Proyecto2.model.User;
 import com.Informatorio2022.Proyecto2.service.UserService;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,13 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.stream.Collectors;
- import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
 @RestController
 @RequestMapping("/auth")
 public class UserAuthController {
