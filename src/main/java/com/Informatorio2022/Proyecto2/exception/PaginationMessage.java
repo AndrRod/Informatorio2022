@@ -25,6 +25,6 @@ public class PaginationMessage {
         if(!page.isLast()) nextPath= path+ "?page=" + (page.getNumber()+1);
         if(!page.isFirst()) prevPath= path+ "?page=" + (page.getNumber()-1);
         if(page.getContent().isEmpty()) content = Collections.singletonList(messageResum.message("page.empty", null));
-        return new MessagePag(content, HttpStatus.ACCEPTED.value(), nextPath, prevPath);
+        return new MessagePag(content, HttpStatus.OK.value(), nextPath, prevPath);
     }
 }

@@ -1,6 +1,5 @@
 package com.Informatorio2022.Proyecto2.repository;
 import com.Informatorio2022.Proyecto2.model.User;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -107,7 +107,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Authentication autenticacionFilter = authenticationManager.authenticate(authenticationToken);
         return autenticacionFilter;
     }
-
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new NotFoundException(messageResum.message("user.email.not.found", email)));
+        Collection<SimpleGrantedAuthority> authorizations = Collections.singleton(new SimpleGrantedAuthority(user.getRole().getAuthority()));
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorizations);
+    }
     @Override
     public UserLoginResponseDto userLogin(String email, String password, HttpServletRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -129,12 +134,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .sign(algorithm);
         return new UserLoginResponseDto(user.getEmail(), user.getRole(), access_token, update_token);
     }
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new NotFoundException(messageResum.message("user.email.not.found", email)));
-        Collection<SimpleGrantedAuthority> authorizations = Collections.singleton(new SimpleGrantedAuthority(user.getRole().getAuthority()));
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorizations);
-    }
+
 
     @Override
     public void refreshToken(RefreshTokenForm form, HttpServletRequest request, HttpServletResponse response) throws IOException {
