@@ -15,6 +15,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,8 +99,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void updateUserRol(Long idUser, String roleName) {
         Optional<User> user = Optional.ofNullable(userRepository.findById(idUser).orElseThrow(() -> new NotFoundException(messageResum.message("user.id.not.found", String.valueOf(idUser)))));
         if(user.get().getRole().toString().equals(roleName)) throw new BadRequestException(messageResum.message("user.has.that.role", roleName));
-        try {user.get().setRole(Role.valueOf(roleName));}
-        catch (Exception e) {throw new NotFoundException(messageResum.message("user.rol.not.found", roleName));}
+        Try.of(() -> {user.get().setRole(Role.valueOf(roleName)); return null;
+        }).onFailure(e -> {throw new NotFoundException(messageResum.message("user.rol.not.found", roleName));});
     }
     @Override
     public Authentication authenticationFilter(String email, String password) throws AuthenticationException {
