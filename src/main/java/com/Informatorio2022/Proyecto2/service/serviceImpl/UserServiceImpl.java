@@ -36,7 +36,12 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.awt.print.Pageable;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -164,5 +169,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void deleteUserById(Long id){
         userRepository.delete(userRepository.findById(id).orElseThrow(()-> new NotFoundException(messageResum.message("user.id.not.found", String.valueOf(id)))));
+    }
+//    QUERIES
+
+    @Override
+    public List<Object> findListByFirstName(String name, Integer page) {
+        return userMapper.listUsersToListDtoPart(userRepository.findByNameAprox(name, PageRequest.of(page, SIZE_TEN)).getContent());
+    }
+    @Override
+    public List<Object> findByCreationDate(LocalDate startDate, LocalDate finishDate, Integer page) {
+        return userMapper.listUsersToListDtoComplete(userRepository.findByCreationDateAprox(LocalDateTime.of(startDate, LocalTime.MIN), LocalDateTime.of(finishDate, LocalTime.MAX), PageRequest.of(page, SIZE_TEN)).getContent());
     }
 }

@@ -7,11 +7,14 @@ import com.Informatorio2022.Proyecto2.exception.MessageResum;
 import com.Informatorio2022.Proyecto2.exception.NotFoundException;
 import com.Informatorio2022.Proyecto2.model.User;
 import com.Informatorio2022.Proyecto2.service.UserService;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -44,9 +47,28 @@ public class UserController {
         userService.deleteUserById(Long.valueOf(id));
         return ResponseEntity.ok(new MessageInfo(messageResum.message("user.delete.ok", id), 200, request.getRequestURI()));
     }
+//    Practica de QUERYS
+    @GetMapping("/byname/{page}")
+    public ResponseEntity<?> listFindByFirstName(@RequestBody ListByName listByName, @PathVariable Integer page){
+        return ResponseEntity.ok(userService.findListByFirstName(listByName.getName(), page));
+    }
+    @GetMapping("/bydates/{page}")
+    public ResponseEntity<?> listBayBetweenDates(@RequestBody FormDates formDates, @PathVariable Integer page){
+        return ResponseEntity.ok(userService.findByCreationDate(formDates.getStartDate(), formDates.getFinishDate(), page));
+    }
 }
 @Data
 class AddRoleToUserForm{
     private String roleName;
 }
-
+@Data
+class ListByName{
+    private String name;
+}
+@Data
+class FormDates{
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate startDate;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate finishDate;
+}
