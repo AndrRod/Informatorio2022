@@ -11,7 +11,8 @@ public interface VoteService {
     List<Vote> listVotes();
     Vote findVotesEventById(Long id);
     Map<String, Integer> rankingByEvents(Long id);
-    HashMap<String, Long> countVoteEntrepName(String nameEntrep, Long idEvent);
+//    HashMap<String, Long> countVoteEntrepName(String nameEntrep, Long idEvent);
     EntreprAndVotes findEntrepreAndVotes(String name, Long id);
-    List<EntreprAndVotes> listRankingEvents(Long id);
+//    List<EntreprAndVotes> listRankingEvents(Long id);
+    List<EntreprAndVotes> listRankingEventsByGroups(Long id);
 }

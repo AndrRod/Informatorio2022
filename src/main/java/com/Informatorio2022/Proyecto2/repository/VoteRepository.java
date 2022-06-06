@@ -16,4 +16,7 @@ public interface VoteRepository extends JpaRepository <Vote, Long> {
     Long countVoteByEntreprNameAndByEventId(@Param("name") String name, @Param("id") Long id);
     @Query("SELECT new com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes(v.entrepreneurshipVoted.name, COUNT(v)) FROM Vote v WHERE v.entrepreneurshipVoted.name = :name AND v.event.id = :id")
     EntreprAndVotes entreprAndVotes(@Param("name") String name, @Param("id") Long id);
+    @Query("SELECT new com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes(v.entrepreneurshipVoted.name, COUNT(v)) FROM Vote v WHERE v.event.id= :id GROUP BY v.entrepreneurshipVoted.name")
+    List<EntreprAndVotes> entreprAndVotesByGroups(@Param("id") Long id);
+
 }

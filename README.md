@@ -181,5 +181,11 @@ e. Example: Informa nombre y votos de un emprendimiento en un determinado evento
     @Query("SELECT new com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes(v.entrepreneurshipVoted.name, COUNT(v)) FROM Vote v WHERE v.entrepreneurshipVoted.name = :name AND v.event.id = :id")
     EntreprAndVotes entreprAndVotes(@Param("name") String name, @Param("id") Long id);
 
+f. Example: Crea una lista de una entidad creada para guardar Grupos de Nombre de Emprendimiento y cantidad de votos.
+
+    @Query("SELECT new com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes(v.entrepreneurshipVoted.name, COUNT(v)) FROM Vote v WHERE v.event.id= :id GROUP BY v.entrepreneurshipVoted.name")
+    List<EntreprAndVotes> entreprAndVotesByGroups(@Param("id") Long id);
+
+
 ---------------------------
 🎁 Hecho por  [AndresRodriguez](https://www.linkedin.com/in/andres-rodriguez-60a166208/) !!!!
