@@ -156,35 +156,41 @@ Ejemplo error actualización de rol:
 
 ## 3. QUERIES (en capa Repositories)
 
-a. Example: Busqueda filtrando por subentidad. 
+
+### 1. VoteRepository:
+
+#### a. Example: Busqueda filtrando por subentidad. 
 
         @Query("SELECT v FROM Vote v WHERE v.event.id = :id")
         List<Vote> listVoteByEventId(@Param("id") Long id);
 
-b. Example: Informa la cantidad de Votos recibidos por una entidad dependiendo el "name" y "id" del evento que participa.
+#### b. Example: Informa la cantidad de Votos recibidos por una entidad dependiendo el "name" y "id" del evento que participa.
 
         @Query("SELECT COUNT(v) FROM Vote v WHERE v.entrepreneurshipVoted.name = :name AND v.event.id = :id")
         Long countVoteByEntreprNameAndByEventId(@Param("name") String name, @Param("id") Long id);
 
-c. Example: Informa los Usuarios que coincidan el firstName con el agregado en el parametro "firstName y los trae una lista de manera paginada.
-
-    @Query(value = "SELECT u FROM User u WHERE u.firstName LIKE %:firstName%")
-    Page<User> findByNameAprox(@Param("firstName") String firstName, Pageable pageable);
-
-d. Example: Informa los Usuarios cuya fecha de creación coincidan en la busqueda y los trae de manera paginada.
-
-    @Query(value = "SELECT u FROM User u WHERE u.creationDate >= :startDate AND u.creationDate <= :finishDate")
-    Page<User> findByCreationDateAprox(@Param("startDate") LocalDateTime startDate, @Param("finishDate") LocalDateTime finishDate, Pageable pageable);
-
-e. Example: Informa nombre y votos de un emprendimiento en un determinado evento.
+#### d. Example: Informa nombre y votos de un emprendimiento en un determinado evento.
         
     @Query("SELECT new com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes(v.entrepreneurshipVoted.name, COUNT(v)) FROM Vote v WHERE v.entrepreneurshipVoted.name = :name AND v.event.id = :id")
     EntreprAndVotes entreprAndVotes(@Param("name") String name, @Param("id") Long id);
 
-f. Example: Crea una lista de una entidad creada para guardar Grupos de Nombre de Emprendimiento y cantidad de votos.
+#### e. Example: Crea una lista de una entidad creada para guardar Grupos de Nombre de Emprendimiento y cantidad de votos.
 
     @Query("SELECT new com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes(v.entrepreneurshipVoted.name, COUNT(v)) FROM Vote v WHERE v.event.id= :id GROUP BY v.entrepreneurshipVoted.name")
     List<EntreprAndVotes> entreprAndVotesByGroups(@Param("id") Long id);
+
+### 2. UserRepository
+
+
+#### a. Example: Informa los Usuarios que coincidan el firstName con el agregado en el parametro "firstName y los trae una lista de manera paginada.
+
+    @Query(value = "SELECT u FROM User u WHERE u.firstName LIKE %:firstName%")
+    Page<User> findByNameAprox(@Param("firstName") String firstName, Pageable pageable);
+
+#### b. Example: Informa los Usuarios cuya fecha de creación coincidan en la busqueda y los trae de manera paginada.
+
+    @Query(value = "SELECT u FROM User u WHERE u.creationDate >= :startDate AND u.creationDate <= :finishDate")
+    Page<User> findByCreationDateAprox(@Param("startDate") LocalDateTime startDate, @Param("finishDate") LocalDateTime finishDate, Pageable pageable);
 
 
 ---------------------------
