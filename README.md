@@ -18,6 +18,7 @@ Proyecto API REST - El objeto es crear un proyecto escalable, donde se utilizan 
 - 👉 Paginación (Mediante una clase reutilizable llamada PaginationMessage).
 - 👉 Utilización de DTOs (creación manual).
 - 👉 Soft delete (borrado logico).
+- 👉 Queries (consultas SQL en capas Repositories).
 
 ---------------------------
 
@@ -152,6 +153,28 @@ Ejemplo error actualización de rol:
 
 ![img_6.png](img_6.png)
 
+
+## 3. QUERIES (en capa Repositories)
+
+a. Example: Busqueda filtrando por subentidad. 
+
+        @Query("SELECT v FROM Vote v WHERE v.event.id = :id")
+        List<Vote> listVoteByEventId(@Param("id") Long id);
+
+b. Example: Informa la cantidad de Votos recibidos por una entidad dependiendo el "name" y "id" del evento que participa.
+
+        @Query("SELECT COUNT(v) FROM Vote v WHERE v.entrepreneurshipVoted.name = :name AND v.event.id = :id")
+        Long countVoteByEntreprNameAndByEventId(@Param("name") String name, @Param("id") Long id);
+
+c. Example: Informa los Usuarios que contengan cadena String en el columna "name" y los trae de manera paginada.
+
+    @Query(value = "SELECT u FROM User u WHERE u.firstName LIKE %:firstName%")
+    Page<User> findByNameAprox(@Param("firstName") String firstName, Pageable pageable);
+
+d. Example: Informa los Usuarios cuya fecha de creación coincidan en la busqueda y los trae de manera paginada.
+
+    @Query(value = "SELECT u FROM User u WHERE u.creationDate >= :startDate AND u.creationDate <= :finishDate")
+    Page<User> findByCreationDateAprox(@Param("startDate") LocalDateTime startDate, @Param("finishDate") LocalDateTime finishDate, Pageable pageable);
 
 ---------------------------
 🎁 Hecho por  [AndresRodriguez](https://www.linkedin.com/in/andres-rodriguez-60a166208/) !!!!
