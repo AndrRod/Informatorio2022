@@ -1,5 +1,6 @@
 package com.Informatorio2022.Proyecto2.service.serviceImpl;
 
+import com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes;
 import com.Informatorio2022.Proyecto2.model.Vote;
 import com.Informatorio2022.Proyecto2.repository.VoteRepository;
 import com.Informatorio2022.Proyecto2.service.VoteService;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class VoteServiceImpl implements VoteService {
+    private static final int RANKING = 10;
     @Autowired
     private VoteRepository voteRepository;
     @Override
@@ -37,10 +39,22 @@ public class VoteServiceImpl implements VoteService {
                 .sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     }
-
     @Override
     public HashMap<String, Long> countVoteEntrepName(String name, Long id) {
         return new HashMap<>(){{put("votes", voteRepository.countVoteByEntreprNameAndByEventId(name, id));}};
+    }
+    @Override
+    public EntreprAndVotes findEntrepreAndVotes(String name, Long id) {
+        return voteRepository.entreprAndVotes(name, id);
+    }
+    @Override
+    public List<EntreprAndVotes> listRankingEvents(Long id) {
+        List<Vote> listVoteByEvent = voteRepository.listVoteByEventId(id);
+        List<EntreprAndVotes> entreprAndVotes = new ArrayList<>();
+        listVoteByEvent.stream().forEach((l)-> {
+            if(!entreprAndVotes.stream().anyMatch(e-> e.getName().equals(l.getEntrepreneurshipVoted().getName())) && entreprAndVotes.size()<RANKING)
+                entreprAndVotes.add(voteRepository.entreprAndVotes(l.getEntrepreneurshipVoted().getName(), id));});
+        return entreprAndVotes.stream().sorted(Comparator.comparing(EntreprAndVotes::getVotes).reversed()).collect(Collectors.toList());
     }
 }
 

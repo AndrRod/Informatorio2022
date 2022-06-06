@@ -1,13 +1,9 @@
-package com.Informatorio2022.Proyecto2.exception;
+package com.Informatorio2022.Proyecto2.dtos;
 
-import com.Informatorio2022.Proyecto2.exception.MessagePag;
-import com.Informatorio2022.Proyecto2.exception.MessageResum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.ServletWebRequest;
-import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;

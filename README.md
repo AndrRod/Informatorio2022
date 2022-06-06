@@ -176,5 +176,10 @@ d. Example: Informa los Usuarios cuya fecha de creación coincidan en la busqued
     @Query(value = "SELECT u FROM User u WHERE u.creationDate >= :startDate AND u.creationDate <= :finishDate")
     Page<User> findByCreationDateAprox(@Param("startDate") LocalDateTime startDate, @Param("finishDate") LocalDateTime finishDate, Pageable pageable);
 
+e. Example: Informa nombre y votos de un emprendimiento en un determinado evento.
+        
+    @Query("SELECT new com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes(v.entrepreneurshipVoted.name, COUNT(v)) FROM Vote v WHERE v.entrepreneurshipVoted.name = :name AND v.event.id = :id")
+    EntreprAndVotes entreprAndVotes(@Param("name") String name, @Param("id") Long id);
+
 ---------------------------
 🎁 Hecho por  [AndresRodriguez](https://www.linkedin.com/in/andres-rodriguez-60a166208/) !!!!

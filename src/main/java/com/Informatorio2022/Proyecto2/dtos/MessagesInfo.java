@@ -1,16 +1,18 @@
-package com.Informatorio2022.Proyecto2.exception;
+package com.Informatorio2022.Proyecto2.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class MessageInfo {
-    @JsonProperty("message")
-    private String message;
+public class MessagesInfo {
+    @JsonProperty("messages")
+    private Map<String, String> messages;
     @JsonProperty("status_code")
     private int statusCode;
     @JsonProperty("path")

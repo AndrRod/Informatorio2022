@@ -1,9 +1,6 @@
 package com.Informatorio2022.Proyecto2.service.serviceImpl;
 
-import com.Informatorio2022.Proyecto2.dtos.RefreshTokenForm;
-import com.Informatorio2022.Proyecto2.dtos.UserCompleteDto;
-import com.Informatorio2022.Proyecto2.dtos.UserLoginResponseDto;
-import com.Informatorio2022.Proyecto2.dtos.UserPartDto;
+import com.Informatorio2022.Proyecto2.dtos.*;
 import com.Informatorio2022.Proyecto2.dtos.mapper.UserMapper;
 import com.Informatorio2022.Proyecto2.enums.Role;
 import com.Informatorio2022.Proyecto2.exception.*;
@@ -36,12 +33,10 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.awt.print.Pageable;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 

@@ -1,5 +1,6 @@
 package com.Informatorio2022.Proyecto2.controller;
 
+import com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes;
 import com.Informatorio2022.Proyecto2.model.Vote;
 import com.Informatorio2022.Proyecto2.service.VoteService;
 import lombok.Data;
@@ -29,12 +30,20 @@ public class VoteController {
     }
 // Queries
     @GetMapping("/rakingByEvent/{id}")
-    ResponseEntity<?> rankingByEvent(@PathVariable Long id){
+    public ResponseEntity<?> rankingByEvent(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(voteService.rankingByEvents(id));
     }
     @GetMapping("/voteByEntrepName/{id}")
-    ResponseEntity<?> findByEntreName(@RequestBody FormName name, @PathVariable Long id){
+    public ResponseEntity<?> findByEntreName(@RequestBody FormName name, @PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(voteService.countVoteEntrepName(name.getName(), id));
+    }
+    @GetMapping("/entAndVotes/{id}")
+    public ResponseEntity<EntreprAndVotes> findEntreprAndVotes(@PathVariable Long id, @RequestBody FormName formName){
+        return ResponseEntity.status(HttpStatus.OK).body(voteService.findEntrepreAndVotes(formName.getName(), id));
+    }
+    @GetMapping("/rakingEvents/{id}")
+    public ResponseEntity<?> rankingEvents(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(voteService.listRankingEvents(id));
     }
 }
 @Data

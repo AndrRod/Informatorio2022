@@ -1,4 +1,4 @@
-package com.Informatorio2022.Proyecto2.exception;
+package com.Informatorio2022.Proyecto2.dtos;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
