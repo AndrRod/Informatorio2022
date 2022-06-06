@@ -166,7 +166,7 @@ b. Example: Informa la cantidad de Votos recibidos por una entidad dependiendo e
         @Query("SELECT COUNT(v) FROM Vote v WHERE v.entrepreneurshipVoted.name = :name AND v.event.id = :id")
         Long countVoteByEntreprNameAndByEventId(@Param("name") String name, @Param("id") Long id);
 
-c. Example: Informa los Usuarios que contengan cadena String en el columna "name" y los trae de manera paginada.
+c. Example: Informa los Usuarios que coincidan el firstName con el agregado en el parametro "firstName y los trae una lista de manera paginada.
 
     @Query(value = "SELECT u FROM User u WHERE u.firstName LIKE %:firstName%")
     Page<User> findByNameAprox(@Param("firstName") String firstName, Pageable pageable);
