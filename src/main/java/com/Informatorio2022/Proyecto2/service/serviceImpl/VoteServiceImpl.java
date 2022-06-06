@@ -28,7 +28,7 @@ public class VoteServiceImpl implements VoteService {
         return voteRepository.findById(id).get();
     }
 
-//    Esta Query resume el metodo de abajo
+//    Esta Query resume el metodo comentado abajo
 //    @Query("SELECT new com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes(v.entrepreneurshipVoted.name, COUNT(v)) FROM Vote v WHERE v.event.id= :id GROUP BY v.entrepreneurshipVoted.name")
 //    List<EntreprAndVotes> entreprAndVotesByGroups(@Param("id") Long id);
     @Override
@@ -44,6 +44,10 @@ public class VoteServiceImpl implements VoteService {
                 .sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     }
+
+//    Esta Query resume el metodo comentado abajo
+//    @Query("SELECT new com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes(v.entrepreneurshipVoted.name, COUNT(v)) FROM Vote v WHERE v.entrepreneurshipVoted.name = :name AND v.event.id = :id")
+//    EntreprAndVotes entreprAndVotes(@Param("name") String name, @Param("id") Long id);
 //    @Override
 //    public HashMap<String, Long> countVoteEntrepName(String name, Long id) {
 //        return new HashMap<>(){{put("votes", voteRepository.countVoteByEntreprNameAndByEventId(name, id));}};
@@ -52,6 +56,11 @@ public class VoteServiceImpl implements VoteService {
     public EntreprAndVotes findEntrepreAndVotes(String name, Long id) {
         return voteRepository.entreprAndVotes(name, id);
     }
+
+//    Esta Query resume el metodo comentado abajo
+//    @Query("SELECT new com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes(v.entrepreneurshipVoted.name, COUNT(v)) FROM Vote v WHERE v.event.id= :id GROUP BY v.entrepreneurshipVoted.name")
+//    List<EntreprAndVotes> entreprAndVotesByGroups(@Param("id") Long id);
+
 //    @Override
 //    public List<EntreprAndVotes> listRankingEvents(Long id) {
 //        List<Vote> listVoteByEvent = voteRepository.listVoteByEventId(id);

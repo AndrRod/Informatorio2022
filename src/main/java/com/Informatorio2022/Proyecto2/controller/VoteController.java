@@ -28,27 +28,30 @@ public class VoteController {
     public ResponseEntity<Vote> getById(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.CREATED).body(voteService.findVotesEventById(id));
     }
-// Queries
+// controllers en los que se usaron Queries
     @GetMapping("/rakingByEvent/{id}")
     public ResponseEntity<?> rankingByEvent(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(voteService.rankingByEvents(id));
     }
-//    @GetMapping("/voteByEntrepName/{id}")
-//    public ResponseEntity<?> findByEntreName(@RequestBody FormName name, @PathVariable Long id){
-//        return ResponseEntity.status(HttpStatus.OK).body(voteService.countVoteEntrepName(name.getName(), id));
-//    }
+
     @GetMapping("/EntrepNameEventId/{id}")
     public ResponseEntity<EntreprAndVotes> findEntreprAndVotes(@PathVariable Long id, @RequestBody FormName formName){
         return ResponseEntity.status(HttpStatus.OK).body(voteService.findEntrepreAndVotes(formName.getName(), id));
+    }
+
+    @GetMapping("/rakingEventsByGroups/{id}")
+    public ResponseEntity<?> rankingEventsGrops(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(voteService.listRankingEventsByGroups(id));
     }
 //    @GetMapping("/rakingEvents/{id}")
 //    public ResponseEntity<?> rankingEvents(@PathVariable Long id){
 //        return ResponseEntity.status(HttpStatus.OK).body(voteService.listRankingEvents(id));
 //    }
-    @GetMapping("/rakingEventsByGroups/{id}")
-    public ResponseEntity<?> rankingEventsGrops(@PathVariable Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(voteService.listRankingEventsByGroups(id));
-    }
+
+    //    @GetMapping("/voteByEntrepName/{id}")
+//    public ResponseEntity<?> findByEntreName(@RequestBody FormName name, @PathVariable Long id){
+//        return ResponseEntity.status(HttpStatus.OK).body(voteService.countVoteEntrepName(name.getName(), id));
+//    }
 }
 @Data
 class FormName{
