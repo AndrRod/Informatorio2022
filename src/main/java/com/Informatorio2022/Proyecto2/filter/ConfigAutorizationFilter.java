@@ -1,5 +1,5 @@
 package com.Informatorio2022.Proyecto2.filter;
-import com.Informatorio2022.Proyecto2.dtos.MessageInfo;
+import com.Informatorio2022.Proyecto2.exception.MessageInfo;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;

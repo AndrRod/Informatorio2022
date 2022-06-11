@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -17,12 +18,14 @@ import java.util.HashSet;
 public class Entrepreneurship {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(unique = true) @NotEmpty(message = "can't be null or empty")
     private String name;
     private String description;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime creationDate;
     private BigDecimal collections;
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
     private Collection<Event> eventSubscribed = new HashSet<>();
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Collection<Tags> tags = new HashSet<>();
 }

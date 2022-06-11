@@ -6,8 +6,6 @@ import com.Informatorio2022.Proyecto2.repository.VoteRepository;
 import com.Informatorio2022.Proyecto2.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -73,7 +71,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public List<EntreprAndVotes> listRankingEventsByGroups(Long id) {
-        return voteRepository.entreprAndVotesByGroups(id);
+        return voteRepository.entreprAndVotesByGroups(id).stream().sorted(Comparator.comparing(EntreprAndVotes::getVotes).reversed()).limit(10).collect(Collectors.toList());
     }
 }
 

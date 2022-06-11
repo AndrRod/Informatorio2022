@@ -1,10 +1,10 @@
 package com.Informatorio2022.Proyecto2.service;
 
-import com.Informatorio2022.Proyecto2.dtos.RefreshTokenForm;
+import com.Informatorio2022.Proyecto2.exception.RefreshTokenForm;
 import com.Informatorio2022.Proyecto2.dtos.UserCompleteDto;
 import com.Informatorio2022.Proyecto2.dtos.UserLoginResponseDto;
 import com.Informatorio2022.Proyecto2.dtos.UserPartDto;
-import com.Informatorio2022.Proyecto2.dtos.MessagePag;
+import com.Informatorio2022.Proyecto2.exception.MessagePag;
 import com.Informatorio2022.Proyecto2.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

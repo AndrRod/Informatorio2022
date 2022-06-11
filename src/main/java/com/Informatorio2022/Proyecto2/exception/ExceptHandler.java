@@ -1,9 +1,6 @@
 package com.Informatorio2022.Proyecto2.exception;
 import javax.validation.ConstraintViolationException;
 
-import com.Informatorio2022.Proyecto2.dtos.MessageInfo;
-import com.Informatorio2022.Proyecto2.dtos.MessageResum;
-import com.Informatorio2022.Proyecto2.dtos.MessagesInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

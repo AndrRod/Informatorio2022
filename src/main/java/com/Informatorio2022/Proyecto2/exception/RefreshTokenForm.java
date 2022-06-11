@@ -1,4 +1,4 @@
-package com.Informatorio2022.Proyecto2.dtos;
+package com.Informatorio2022.Proyecto2.exception;
 import lombok.Getter;
 import lombok.Setter;
 

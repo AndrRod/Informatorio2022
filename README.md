@@ -192,6 +192,13 @@ Ejemplo error actualización de rol:
     @Query(value = "SELECT u FROM User u WHERE u.creationDate >= :startDate AND u.creationDate <= :finishDate")
     Page<User> findByCreationDateAprox(@Param("startDate") LocalDateTime startDate, @Param("finishDate") LocalDateTime finishDate, Pageable pageable);
 
+### 3. TagRespository
+
+#### b. Example: Informa los Usuarios cuyo tag (Collection<Tag>) es igual al parametro ingresado.
+
+    @Query("SELECT e FROM Entrepreneurship e JOIN FETCH e.tags t WHERE t.name IN (:tag)")
+    List<Entrepreneurship> listOfEnreneurshipByTagName(@Param("tag") Collection<String> tag);
+
 
 ---------------------------
 🎁 Hecho por  [AndresRodriguez](https://www.linkedin.com/in/andres-rodriguez-60a166208/) !!!!
