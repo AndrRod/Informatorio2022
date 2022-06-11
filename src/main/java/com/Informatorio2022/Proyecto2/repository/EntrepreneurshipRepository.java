@@ -14,6 +14,6 @@ import java.util.List;
 public interface EntrepreneurshipRepository extends JpaRepository<Entrepreneurship, Long> {
     @Query("SELECT e FROM Entrepreneurship e JOIN FETCH e.tags t WHERE t.name IN (:tag)")
     List<Entrepreneurship> listOfEnreneurshipByTagName(@Param("tag") Collection<String> tag);
-
-    List<Entrepreneurship> findByTagsNameIn(Collection<String> names);
+// jpa ayuda a hacer la query anterior de la siguiente manera
+//    List<Entrepreneurship> findByTagsNameIn(Collection<String> names);
 }

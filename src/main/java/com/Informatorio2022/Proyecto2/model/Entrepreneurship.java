@@ -24,7 +24,7 @@ public class Entrepreneurship {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime creationDate;
     private BigDecimal collections;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<Event> eventSubscribed = new HashSet<>();
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<Tags> tags = new HashSet<>();
