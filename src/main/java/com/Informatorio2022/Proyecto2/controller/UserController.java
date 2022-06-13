@@ -1,5 +1,6 @@
 package com.Informatorio2022.Proyecto2.controller;
 import com.Informatorio2022.Proyecto2.dtos.UserCompleteDto;
+import com.Informatorio2022.Proyecto2.dtos.UserDtoUpdate;
 import com.Informatorio2022.Proyecto2.dtos.UserPartDto;
 import com.Informatorio2022.Proyecto2.exception.MessageInfo;
 import com.Informatorio2022.Proyecto2.exception.MessagePag;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 
+@CrossOrigin(origins = {"http://127.0.0.1:3000/", "http://127.0.0.1:5500/"})
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -30,8 +32,8 @@ public class UserController {
         return ResponseEntity.ok(userService.findPageBy10Users(Integer.valueOf(page), request));
     }
     @PutMapping("/{id}")
-    public ResponseEntity<UserPartDto> userUpdate(@PathVariable String id, @RequestBody UserPartDto userPartDto){
-        return ResponseEntity.ok(userService.updateUser(Long.valueOf(id), userPartDto));
+    public ResponseEntity<UserPartDto> userUpdate(@PathVariable String id, @RequestBody UserDtoUpdate userDtoUpdate){
+        return ResponseEntity.ok(userService.updateUser(Long.valueOf(id), userDtoUpdate));
     }
     @PutMapping("/role/{id}")
     public ResponseEntity<MessageInfo> userUpdateRole(@PathVariable String id, @RequestBody AddRoleToUserForm role, HttpServletRequest request){
@@ -44,11 +46,11 @@ public class UserController {
         return ResponseEntity.ok(new MessageInfo(messageResum.message("user.delete.ok", id), 200, request.getRequestURI()));
     }
 //    Practica de QUERYS
-    @GetMapping("/byname/{page}")
+    @PostMapping("/byname/{page}")
     public ResponseEntity<?> listFindByFirstName(@RequestBody ListByName listByName, @PathVariable Integer page){
         return ResponseEntity.ok(userService.findListByFirstName(listByName.getName(), page));
     }
-    @GetMapping("/bydates/{page}")
+    @PostMapping("/bydates/{page}")
     public ResponseEntity<?> listBayBetweenDates(@RequestBody FormDates formDates, @PathVariable Integer page){
         return ResponseEntity.ok(userService.findByCreationDate(formDates.getStartDate(), formDates.getFinishDate(), page));
     }

@@ -15,7 +15,6 @@ public class UserCompleteDto {
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
     private Role role;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime creationDate;

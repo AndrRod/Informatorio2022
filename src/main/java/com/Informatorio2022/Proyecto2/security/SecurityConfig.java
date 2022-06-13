@@ -11,8 +11,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+@CrossOrigin(origins = {"http://localhost:3000"})
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor

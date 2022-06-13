@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+@CrossOrigin(origins = {"http://127.0.0.1:3000/", "http://127.0.0.1:5500/"})
 @RestController
 @RequestMapping("/auth")
 public class UserAuthController {

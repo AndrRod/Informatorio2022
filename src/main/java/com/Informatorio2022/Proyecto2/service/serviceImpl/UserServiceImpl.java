@@ -76,10 +76,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public MessagePag findPageBy10Users(int page, HttpServletRequest request) {
         Page<User> userPage = userRepository.findAll(PageRequest.of(page, SIZE_TEN));
-        return paginationMessage.messageInfo(userPage, userMapper.listUsersToListDtoPart(userPage.getContent()), request);
+        return paginationMessage.messageInfo(userPage, userMapper.listUserEntityToPageDto(userPage.getContent()), request);
     }
     @Override
-    public UserPartDto updateUser(Long id, UserPartDto dto) {
+    public UserPartDto updateUser(Long id, UserDtoUpdate dto) {
         Optional<User> user = Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new NotFoundException(messageResum.message("user.id.not.found", String.valueOf(id)))));
         if (user.get() == userRepository.findByEmail(dto.getEmail())) dto.setEmail(null);
         if (userRepository.existsByEmail(dto.getEmail()))throw new BadRequestException(messageResum.message("email.already.exist", dto.getEmail()));
@@ -88,6 +88,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             if (dto.getLastName() != null) u.setLastName(dto.getLastName());
             if (dto.getEmail() != null) u.setEmail(dto.getEmail());
             if (dto.getPassword() != null) u.setPassword(passwordEncoder.encode(dto.getPassword()));
+            if(dto.getRole() != null) updateUserRol(user.get().getId(), dto.getRole());
         });
         return userMapper.userEntityToPartDto(userRepository.save(user.get()));
     }
@@ -98,7 +99,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void updateUserRol(Long idUser, String roleName) {
         Optional<User> user = Optional.ofNullable(userRepository.findById(idUser).orElseThrow(() -> new NotFoundException(messageResum.message("user.id.not.found", String.valueOf(idUser)))));
-        if(user.get().getRole().toString().equals(roleName)) throw new BadRequestException(messageResum.message("user.has.that.role", roleName));
+//        if(user.get().getRole().toString().equals(roleName)) throw new BadRequestException(messageResum.message("user.has.that.role", roleName));
         Try.of(() -> {user.get().setRole(Role.valueOf(roleName)); return null;
         }).onFailure(e -> {throw new NotFoundException(messageResum.message("user.rol.not.found", roleName));});
     }

@@ -18,8 +18,8 @@ public class PaginationMessage {
         List <Object> content = dtoPageList;
         String nextPath = null;
         String prevPath = null;
-        if(!page.isLast()) nextPath= path+ "?page=" + (page.getNumber()+1);
-        if(!page.isFirst()) prevPath= path+ "?page=" + (page.getNumber()-1);
+        if(!page.isLast()) nextPath= "?page=" + (page.getNumber()+1);
+        if(!page.isFirst()) prevPath= "?page=" + (page.getNumber()-1);
         if(page.getContent().isEmpty()) content = Collections.singletonList(messageResum.message("page.empty", null));
         return new MessagePag(content, HttpStatus.OK.value(), nextPath, prevPath);
     }

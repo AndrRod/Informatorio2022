@@ -1,5 +1,6 @@
 package com.Informatorio2022.Proyecto2.service;
 
+import com.Informatorio2022.Proyecto2.dtos.UserDtoUpdate;
 import com.Informatorio2022.Proyecto2.exception.RefreshTokenForm;
 import com.Informatorio2022.Proyecto2.dtos.UserCompleteDto;
 import com.Informatorio2022.Proyecto2.dtos.UserLoginResponseDto;
@@ -19,7 +20,7 @@ public interface UserService {
     UserCompleteDto findUserById(Long id);
     UserPartDto createUser(UserPartDto userDto);
     MessagePag findPageBy10Users(int page, HttpServletRequest request);
-    UserPartDto updateUser(Long id, UserPartDto userPartDto);
+    UserPartDto updateUser(Long id, UserDtoUpdate dtoUpdate);
     void updateUserRol(Long idUser, String roleName);
     Authentication authenticationFilter(String email, String password) throws AuthenticationException;
     UserLoginResponseDto userLogin(String email, String password, HttpServletRequest request);
