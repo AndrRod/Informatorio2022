@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
     boolean existsByEmail(String email);
-    @Query(value = "SELECT u FROM User u WHERE u.firstName LIKE %:name% OR u.lastName LIKE %:name%")
+    @Query(value = "SELECT u FROM User u WHERE concat(u.firstName, ' ', u.lastName) LIKE %:name% OR u.firstName LIKE %:name% OR u.lastName LIKE %:name%")
     Page<User> findByNameAprox(@Param("name") String firstOrLastName, Pageable pageable);
     @Query(value = "SELECT u FROM User u WHERE u.creationDate >= :startDate AND u.creationDate <= :finishDate")
     Page<User> findByCreationDateAprox(@Param("startDate") LocalDateTime startDate, @Param("finishDate") LocalDateTime finishDate, Pageable pageable);

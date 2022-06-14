@@ -170,7 +170,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public List<Object> findListByFirstName(String name, Integer page) {
-        return userMapper.listUsersToListDtoPart(userRepository.findByNameAprox(name, PageRequest.of(page, SIZE_TEN)).getContent());
+        return userMapper.listUsersToListDtoComplete(userRepository.findByNameAprox(name, PageRequest.of(page, SIZE_TEN)).getContent());
     }
     @Override
     public List<Object> findByCreationDate(LocalDate startDate, LocalDate finishDate, Integer page) {
