@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 
-@CrossOrigin(origins = {"http://127.0.0.1:3000/", "http://127.0.0.1:5500/"})
+@CrossOrigin(origins = "http://127.0.0.1:3000"
+        , methods={RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT,RequestMethod.DELETE}
+        ,allowCredentials = "true")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -57,7 +59,7 @@ public class UserController {
     }
 }
 @Data
-class AddRoleToUserForm{
+class   AddRoleToUserForm{
     private String roleName;
 }
 @Data

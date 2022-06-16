@@ -184,7 +184,7 @@ Ejemplo error actualización de rol:
 
 #### a. Example: Informa los Usuarios que coincidan el firstName con el agregado en el parametro "firstName y los trae una lista de manera paginada.
 
-    @Query(value = "SELECT u FROM User u WHERE u.firstName LIKE %:firstName%")
+    @Query(value = "SELECT u FROM User u WHERE concat(u.firstName, ' ', u.lastName) LIKE %:name% OR u.firstName LIKE %:name% OR u.lastName LIKE %:name%")
     Page<User> findByNameAprox(@Param("firstName") String firstName, Pageable pageable);
 
 #### b. Example: Informa los Usuarios cuya fecha de creación coincidan en la busqueda y los trae de manera paginada.
