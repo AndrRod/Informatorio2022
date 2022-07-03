@@ -35,4 +35,8 @@ public class EventController {
     public ResponseEntity<MessagePag> evensListPagination(@RequestParam int page, HttpServletRequest request){
        return ResponseEntity.ok(eventService.listEventsPagintation(page, request));
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<EventDtoPart> findById(@PathVariable Long id){
+        return ResponseEntity.ok(eventService.findDtoById(id));
+    }
 }

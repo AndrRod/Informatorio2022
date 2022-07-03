@@ -2,6 +2,7 @@ package com.Informatorio2022.Proyecto2.service.serviceImpl;
 
 import com.Informatorio2022.Proyecto2.dtos.EntrepreneurshipPartDto;
 import com.Informatorio2022.Proyecto2.dtos.mapper.EntrepreneurshipMapper;
+import com.Informatorio2022.Proyecto2.dtos.mapper.TagMapper;
 import com.Informatorio2022.Proyecto2.exception.*;
 import com.Informatorio2022.Proyecto2.model.Entrepreneurship;
 import com.Informatorio2022.Proyecto2.model.Tags;
@@ -39,6 +40,8 @@ public class EntrepreneurshipServiceImpl implements EntrepreneurshipService {
     private UserService userService;
     @Autowired
     private MessageResum messageResum;
+    @Autowired
+    private TagMapper tagMapper;
 
     @Override
     public MessagePag getAllPageable(int page, HttpServletRequest request) {
@@ -48,7 +51,7 @@ public class EntrepreneurshipServiceImpl implements EntrepreneurshipService {
 //    filtrar que solo el rol owner pueda crear
     @Override
     public Entrepreneurship createEntrepreneurship(EntrepreneurshipPartDto entrepreneurship, HttpServletRequest request) {
-        Entrepreneurship entrepr = entrepreneurshipMapper.dtoToEntity(entrepreneurship);
+        Entrepreneurship entrepr = entrepreneurshipMapper.createDtoToEntity(entrepreneurship);
         entrepr.getUsers().add(userService.findUserLogedByEmail(request));
         return entrepreneurshipRepository.save(entrepr);
     }
@@ -74,11 +77,28 @@ public class EntrepreneurshipServiceImpl implements EntrepreneurshipService {
     }
 
     @Override
+    public EntrepreneurshipPartDto updateEntreById(Long id, EntrepreneurshipPartDto entrepreneurshipPartDto) {
+        Entrepreneurship entrepreneurship = findById(id);
+        Optional.of(entrepreneurship).stream().forEach((e)->{
+            if(entrepreneurshipPartDto.getName() != null) e.setName(entrepreneurshipPartDto.getName());
+            if(entrepreneurshipPartDto.getDescription() != null) e.setDescription(entrepreneurshipPartDto.getDescription());
+            if(entrepreneurshipPartDto.getCollections()!= null) e.setCollections(entrepreneurshipPartDto.getCollections());
+            if(entrepreneurshipPartDto.getTags()!= null) e.setTags(tagMapper.listDtoToEntity(entrepreneurshipPartDto.getTags()));
+        });
+        return entrepreneurshipMapper.entityToDto(entrepreneurship);
+    }
+
+    @Override
     public void deleteEntrepById(Long id, HttpServletRequest request) {
         isAuthorizate(findById(id).getUsers(), request);
         entrepreneurshipRepository.delete(findById(id));
     }
+    @Override
+    public Entrepreneurship findByName(String entrepName){
+        return Optional.ofNullable(entrepreneurshipRepository.findByName(entrepName)).orElseThrow(()-> new NotFoundException(messageResum.message("entrep.not.found.name", entrepName)));
+    }
     public void isAuthorizate(Collection<User> users, HttpServletRequest request){
         if(!users.contains(userService.findUserLogedByEmail(request))) throw new NotFoundException(messageResum.message("not.authorizate", null));
     }
+
 }

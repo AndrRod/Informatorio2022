@@ -15,9 +15,11 @@ public class EntrepreneurshipMapper {
     @Autowired
     private TagMapper tagMapper;
     public EntrepreneurshipPartDto entityToDto(Entrepreneurship entrepreneurship){
-        return new EntrepreneurshipPartDto(entrepreneurship.getName(), entrepreneurship.getDescription(), entrepreneurship.getCollections(), tagMapper.listEntityToDto(entrepreneurship.getTags()));
+        return new EntrepreneurshipPartDto(entrepreneurship.getId(), entrepreneurship.getName(), entrepreneurship.getDescription(), entrepreneurship.getCollections(), tagMapper.listEntityToDto(entrepreneurship.getTags()));
     }
-    public Entrepreneurship dtoToEntity(EntrepreneurshipPartDto entrepreneurshipPartDto){
+
+
+    public Entrepreneurship createDtoToEntity(EntrepreneurshipPartDto entrepreneurshipPartDto){
         return new Entrepreneurship(null, entrepreneurshipPartDto.getName(), entrepreneurshipPartDto.getDescription(), null, entrepreneurshipPartDto.getCollections(),  new HashSet<>(), new HashSet<>(), new HashSet<>());
     }
     public List<Object> listEntityToDto(List<Entrepreneurship> entrepreneurshipList) {return entrepreneurshipList.stream().map(e-> entityToDto(e)).collect(Collectors.toList());}

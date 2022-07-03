@@ -14,4 +14,6 @@ public interface EntrepreneurshipService {
     void deleteEntrepById(Long id, HttpServletRequest request);
     void addTagToEntrepreneurship(Long id, String tagName,  HttpServletRequest request);
     Entrepreneurship findById(Long id);
+    EntrepreneurshipPartDto updateEntreById(Long id, EntrepreneurshipPartDto entrepreneurshipPartDto);
+    Entrepreneurship findByName(String entrepName);
 }

@@ -26,8 +26,8 @@ public class Vote {
     private Entrepreneurship entrepreneurshipVoted;
     @ManyToOne
     @JoinColumn(name = "event_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Event event;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private LocalDateTime createDate;
 }

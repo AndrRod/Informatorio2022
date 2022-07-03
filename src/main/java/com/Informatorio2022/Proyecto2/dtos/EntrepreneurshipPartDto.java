@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 @Getter @Setter @AllArgsConstructor
 public class EntrepreneurshipPartDto {
+    private Long id;
     private String name;
     private String description;
     private BigDecimal collections;

@@ -43,4 +43,8 @@ public class EntrepreneurshipController {
         return ResponseEntity.ok().body(new MessageInfo(messageResum.message("entrep.delete.id", id.toString()), HttpStatus.OK.value(), request.getRequestURI()));
 
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<EntrepreneurshipPartDto> udpateEntityByDto(@PathVariable Long id, @RequestBody EntrepreneurshipPartDto dto){
+        return ResponseEntity.ok(entrepreneurshipService.updateEntreById(id, dto));
+    }
 }

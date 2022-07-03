@@ -52,6 +52,10 @@ public class EventServiceImpl implements EventService {
     public Event findById(Long id) {
         return eventRepository.findById(id).orElseThrow(()-> new NotFoundException(messageResum.message("event.not.found", String.valueOf(id))));
     }
+    @Override
+    public EventDtoPart findDtoById(Long id){
+        return eventMapper.entityToDto(findById(id));
+    }
 
     @Override
     public MessagePag listEventsPagintation(int page, HttpServletRequest request) {

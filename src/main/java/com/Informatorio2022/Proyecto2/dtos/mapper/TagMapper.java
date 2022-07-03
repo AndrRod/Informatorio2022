@@ -10,6 +10,11 @@ import java.util.stream.Collectors;
 
 @Component
 public class TagMapper {
-    TagDtoPart entityToDto(Tags tags){ return new TagDtoPart(tags.getName());}
-    Collection<TagDtoPart> listEntityToDto(Collection<Tags> tags){return tags.stream().map(t-> entityToDto(t)).collect(Collectors.toList());}
+    public TagDtoPart entityToDto(Tags tags){ return new TagDtoPart(tags.getId(), tags.getName());}
+    public Tags dtoToEntity(TagDtoPart tagDtoPart){return new Tags(tagDtoPart.getId(), tagDtoPart.getName());}
+    public Collection<TagDtoPart> listEntityToDto(Collection<Tags> tags){return tags.stream().map(t-> entityToDto(t)).collect(Collectors.toList());}
+
+    public Collection<Tags> listDtoToEntity(Collection<TagDtoPart> tags) {
+        return tags.stream().map(t-> dtoToEntity(t)).collect(Collectors.toList());
+    }
 }

@@ -28,6 +28,6 @@ public class Entrepreneurship {
     private Collection<Event> eventSubscribed = new HashSet<>();
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<Tags> tags = new HashSet<>();
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<User> users = new HashSet<>();
 }

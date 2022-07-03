@@ -6,5 +6,6 @@ import lombok.Setter;
 
 @Getter @Setter @AllArgsConstructor
 public class TagDtoPart {
+    private Long id;
     private String name;
 }

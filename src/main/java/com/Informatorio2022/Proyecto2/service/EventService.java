@@ -11,5 +11,6 @@ public interface EventService {
     void deleteEventById(Long id);
     EventDtoPart modifyEventById(Long id, EventDtoPart event);
     Event findById(Long id);
+    EventDtoPart findDtoById(Long id);
     MessagePag listEventsPagintation(int page, HttpServletRequest request);
 }

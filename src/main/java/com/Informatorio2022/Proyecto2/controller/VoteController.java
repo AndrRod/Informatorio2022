@@ -1,7 +1,9 @@
 package com.Informatorio2022.Proyecto2.controller;
 
 import com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes;
+import com.Informatorio2022.Proyecto2.dtos.VoteDtoPart;
 import com.Informatorio2022.Proyecto2.exception.MessageInfo;
+import com.Informatorio2022.Proyecto2.exception.MessagePag;
 import com.Informatorio2022.Proyecto2.model.Vote;
 import com.Informatorio2022.Proyecto2.service.VoteService;
 import lombok.Data;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +26,12 @@ public class VoteController {
     private VoteService voteService;
 
     @GetMapping
-    public ResponseEntity<List<Vote>> getAllVotes(){
-        return ResponseEntity.status(HttpStatus.OK).body(voteService.listVotes());
+    public ResponseEntity<MessagePag> getAllVotes(@RequestParam int page, HttpServletRequest request){
+        return ResponseEntity.status(HttpStatus.OK).body(voteService.listVotes(page, request));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Vote> getById(@PathVariable Long id){
-        return ResponseEntity.status(HttpStatus.CREATED).body(voteService.findVotesEventById(id));
+    public ResponseEntity<VoteDtoPart> getById(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(voteService.findVotesEventById(id));
     }
 // controllers en los que se usaron Queries
     @GetMapping("/rakingByEvent/{id}")

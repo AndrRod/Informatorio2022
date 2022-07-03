@@ -1,16 +1,24 @@
 package com.Informatorio2022.Proyecto2.service.serviceImpl;
 
 import com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes;
+import com.Informatorio2022.Proyecto2.dtos.VoteDtoPart;
+import com.Informatorio2022.Proyecto2.dtos.mapper.VoteMapper;
+import com.Informatorio2022.Proyecto2.exception.MessagePag;
 import com.Informatorio2022.Proyecto2.exception.MessageResum;
 import com.Informatorio2022.Proyecto2.exception.NotFoundException;
+import com.Informatorio2022.Proyecto2.exception.PaginationMessage;
 import com.Informatorio2022.Proyecto2.model.User;
 import com.Informatorio2022.Proyecto2.model.Vote;
 import com.Informatorio2022.Proyecto2.repository.EntrepreneurshipRepository;
 import com.Informatorio2022.Proyecto2.repository.VoteRepository;
+import com.Informatorio2022.Proyecto2.service.EntrepreneurshipService;
+import com.Informatorio2022.Proyecto2.service.EventService;
 import com.Informatorio2022.Proyecto2.service.UserService;
 import com.Informatorio2022.Proyecto2.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,21 +29,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class VoteServiceImpl implements VoteService {
     private static final int RANKING = 10;
+    private static final int SIZE_TEN = 10;
     @Autowired
     private VoteRepository voteRepository;
     @Autowired
-    private EntrepreneurshipRepository entrepreneurshipRepository;
+    private EntrepreneurshipService entrepreneurshipService;
     @Autowired
     private UserService userService;
     @Autowired
+    private EventService eventService;
+    @Autowired
     private MessageResum messageResum;
+    @Autowired
+    private VoteMapper voteMapper;
+    @Autowired
+    private PaginationMessage paginationMessage;
     @Override
-    public List<Vote> listVotes() {
-        return voteRepository.findAll();
+    public MessagePag listVotes(int page, HttpServletRequest request) {
+        Page<Vote> votes = voteRepository.findAll(PageRequest.of(page, SIZE_TEN));
+        return paginationMessage.messageInfo(votes, voteMapper.ListDtoFromListEntity(votes.getContent()), request);
     }
     @Override
-    public Vote findVotesEventById(Long id) {
-        return voteRepository.findById(id).orElseThrow(()-> new NotFoundException(messageResum.message("not.found.vote.by.event", String.valueOf(id))));
+    public VoteDtoPart findVotesEventById(Long id) {
+        return voteMapper.getDtoFromEntity(voteRepository.findById(id).orElseThrow(()-> new NotFoundException(messageResum.message("not.found.vote.by.event", String.valueOf(id)))));
     }
 
 //    Esta Query resume el metodo comentado abajo (ranking de emprendimientos por evento)
@@ -87,17 +103,16 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public Vote createVote(Long idEvent, String Entrepr, HttpServletRequest request) {
-//        Vote vote = voteRepository.findById(idEvent).orElseThrow(()-> new NotFoundException(messageResum.message("not.found.event", String.valueOf(idEvent))));
+    public VoteDtoPart createVote(Long idEvent, String entrep, HttpServletRequest request) {
         Vote vote = new Vote();
         Optional.of(vote).stream().forEach(
                 (v)-> {
                     v.setCreatedBy(userService.findUserLogedByEmail(request));
-//                    v.setEvent();
+                    v.setEvent(eventService.findById(idEvent));
+                    v.setEntrepreneurshipVoted(entrepreneurshipService.findByName(entrep));
                 }
         );
-        return voteRepository.save(vote);
-    }
+        return voteMapper.getDtoFromEntity(voteRepository.save(vote));   }
 
 
 }
