@@ -2,6 +2,8 @@ package com.Informatorio2022.Proyecto2.repository;
 import com.Informatorio2022.Proyecto2.dtos.EntrepreneurshipPartDto;
 import com.Informatorio2022.Proyecto2.model.Entrepreneurship;
 import com.Informatorio2022.Proyecto2.model.Tags;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +15,9 @@ import java.util.List;
 @Repository
 public interface EntrepreneurshipRepository extends JpaRepository<Entrepreneurship, Long> {
     @Query("SELECT e FROM Entrepreneurship e JOIN FETCH e.tags t WHERE t.name IN (:tag)")
-    List<Entrepreneurship> listOfEnreneurshipByTagName(@Param("tag") Collection<String> tag);
+    List<Entrepreneurship> listOfEnreneurshipByTagName(@Param("tag") Collection<String> tag, Pageable pageable);
 // jpa ayuda a hacer la query anterior de la siguiente manera
 //    List<Entrepreneurship> findByTagsNameIn(Collection<String> names);
+    Page<Entrepreneurship> findByUsersEmailIn(@Param("email") Collection<String> email, Pageable pageable);
+    Entrepreneurship findByName(String name);
 }

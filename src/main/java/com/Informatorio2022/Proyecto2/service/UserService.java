@@ -1,6 +1,7 @@
 package com.Informatorio2022.Proyecto2.service;
 
 import com.Informatorio2022.Proyecto2.dtos.UserDtoUpdate;
+import com.Informatorio2022.Proyecto2.exception.MessageResum;
 import com.Informatorio2022.Proyecto2.exception.RefreshTokenForm;
 import com.Informatorio2022.Proyecto2.dtos.UserCompleteDto;
 import com.Informatorio2022.Proyecto2.dtos.UserLoginResponseDto;
@@ -30,5 +31,7 @@ public interface UserService {
 //    QUERIES IN REPOSITORY
     List<Object> findListByFirstName(String name, Integer page);
     List<Object> findByCreationDate(LocalDate startDate, LocalDate finishDate, Integer page);
+    User findUserLogedByEmail(HttpServletRequest request);
+    String emailUserLoged(HttpServletRequest request);
 }
 

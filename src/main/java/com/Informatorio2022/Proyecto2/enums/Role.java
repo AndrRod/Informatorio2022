@@ -5,7 +5,8 @@ import org.springframework.security.core.GrantedAuthority;
 public enum Role implements GrantedAuthority {
     COLLABORATOR(Code.COLLABORATOR),
     USER(Code.USER),
-    OWNER(Code.OWNER);
+    OWNER(Code.OWNER),
+    ADMIN(Code.ADMIN);
 
     private final String authority;
 
@@ -21,5 +22,6 @@ public enum Role implements GrantedAuthority {
         public static final String COLLABORATOR = "ROLE_COLLABORATOR";
         public static final String USER = "ROLE_USER";
         public static final String OWNER = "ROLE_OWNER";
+        public static final String ADMIN = "ROLE_ADMIN";
     }
 }

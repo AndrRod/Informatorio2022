@@ -8,7 +8,10 @@ import java.util.List;
 
 public interface EntrepreneurshipService {
     MessagePag getAllPageable(int page, HttpServletRequest request);
-    Entrepreneurship createEntrepreneurship(Entrepreneurship entrepreneurship);
-    List<Entrepreneurship> findByTagName(String tags);
+    Entrepreneurship createEntrepreneurship(EntrepreneurshipPartDto entrepreneurship, HttpServletRequest request);
+    List<Entrepreneurship> findByTagName(String tags, int page);
     EntrepreneurshipPartDto getById(Long id);
+    void deleteEntrepById(Long id, HttpServletRequest request);
+    void addTagToEntrepreneurship(Long id, String tagName,  HttpServletRequest request);
+    Entrepreneurship findById(Long id);
 }

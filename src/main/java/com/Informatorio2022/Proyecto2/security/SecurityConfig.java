@@ -27,10 +27,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.cors();
         http.authorizeRequests().antMatchers("/auth/login", "/auth/register", "/auth/refresh", "/auth/accessdenied", "/auth/logout", "/auth/logoutsuccess");
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/users/{id}", "/users").hasAnyRole("OWNER");
-        http.authorizeRequests().antMatchers(HttpMethod.PUT, "/users/{id}", "/users/role/{id}").hasAnyRole("OWNER");
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "/users/byname/{page}", "/users/bydates/{page}").hasAnyRole("OWNER");
-        http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/users/{id}").hasAnyRole("OWNER");
+//        http.authorizeRequests().antMatchers(HttpMethod.GET, "/users/{id}", "/users").hasAnyRole("OWNER");
+//        http.authorizeRequests().antMatchers(HttpMethod.PUT, "/users/{id}", "/users/role/{id}").hasAnyRole("OWNER");
+//        http.authorizeRequests().antMatchers(HttpMethod.POST, "/users/byname/{page}", "/users/bydates/{page}").hasAnyRole("OWNER");
+//        http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/users/{id}").hasAnyRole("OWNER");
         http.authorizeRequests().anyRequest().permitAll();
         http.logout()
                 .logoutUrl("/auth/logout")
@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/auth/logoutsuccess").permitAll();
         http.exceptionHandling().accessDeniedPage("/auth/accessdenied");
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.addFilterBefore(new ConfigAutorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(new ConfigAutorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
     @Bean
     @Override

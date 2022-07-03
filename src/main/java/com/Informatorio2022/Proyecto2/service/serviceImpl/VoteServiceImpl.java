@@ -1,13 +1,19 @@
 package com.Informatorio2022.Proyecto2.service.serviceImpl;
 
 import com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes;
+import com.Informatorio2022.Proyecto2.exception.MessageResum;
+import com.Informatorio2022.Proyecto2.exception.NotFoundException;
+import com.Informatorio2022.Proyecto2.model.User;
 import com.Informatorio2022.Proyecto2.model.Vote;
+import com.Informatorio2022.Proyecto2.repository.EntrepreneurshipRepository;
 import com.Informatorio2022.Proyecto2.repository.VoteRepository;
+import com.Informatorio2022.Proyecto2.service.UserService;
 import com.Informatorio2022.Proyecto2.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,13 +23,19 @@ public class VoteServiceImpl implements VoteService {
     private static final int RANKING = 10;
     @Autowired
     private VoteRepository voteRepository;
+    @Autowired
+    private EntrepreneurshipRepository entrepreneurshipRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private MessageResum messageResum;
     @Override
     public List<Vote> listVotes() {
         return voteRepository.findAll();
     }
     @Override
     public Vote findVotesEventById(Long id) {
-        return voteRepository.findById(id).get();
+        return voteRepository.findById(id).orElseThrow(()-> new NotFoundException(messageResum.message("not.found.vote.by.event", String.valueOf(id))));
     }
 
 //    Esta Query resume el metodo comentado abajo (ranking de emprendimientos por evento)
@@ -73,5 +85,20 @@ public class VoteServiceImpl implements VoteService {
     public List<EntreprAndVotes> listRankingEventsByGroups(Long id) {
         return voteRepository.entreprAndVotesByGroups(id).stream().sorted(Comparator.comparing(EntreprAndVotes::getVotes).reversed()).limit(10).collect(Collectors.toList());
     }
+
+    @Override
+    public Vote createVote(Long idEvent, String Entrepr, HttpServletRequest request) {
+//        Vote vote = voteRepository.findById(idEvent).orElseThrow(()-> new NotFoundException(messageResum.message("not.found.event", String.valueOf(idEvent))));
+        Vote vote = new Vote();
+        Optional.of(vote).stream().forEach(
+                (v)-> {
+                    v.setCreatedBy(userService.findUserLogedByEmail(request));
+//                    v.setEvent();
+                }
+        );
+        return voteRepository.save(vote);
+    }
+
+
 }
 

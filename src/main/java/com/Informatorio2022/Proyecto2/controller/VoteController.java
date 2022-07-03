@@ -1,6 +1,7 @@
 package com.Informatorio2022.Proyecto2.controller;
 
 import com.Informatorio2022.Proyecto2.dtos.EntreprAndVotes;
+import com.Informatorio2022.Proyecto2.exception.MessageInfo;
 import com.Informatorio2022.Proyecto2.model.Vote;
 import com.Informatorio2022.Proyecto2.service.VoteService;
 import lombok.Data;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 public class VoteController {
     @Autowired
     private VoteService voteService;
+
     @GetMapping
     public ResponseEntity<List<Vote>> getAllVotes(){
         return ResponseEntity.status(HttpStatus.OK).body(voteService.listVotes());

@@ -40,6 +40,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -150,7 +151,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             User user = findUserByEmail(email);
             String acceso_token = JWT.create()
                     .withSubject(user.getEmail())
-                    .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000)) // 10 minutos
+                    .withExpiresAt(new Date(System.currentTimeMillis() + 20 * 60 * 1000)) // 10 minutos
                     .withIssuer(request.getRequestURL().toString())
                     .withClaim("role", Optional.ofNullable(user.getRole().getAuthority()).stream().collect(Collectors.toList()))
                     .sign(algorithm);
@@ -167,7 +168,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userRepository.delete(userRepository.findById(id).orElseThrow(()-> new NotFoundException(messageResum.message("user.id.not.found", String.valueOf(id)))));
     }
 //    QUERIES
-
     @Override
     public List<Object> findListByFirstName(String name, Integer page) {
         return userMapper.listUsersToListDtoComplete(userRepository.findByNameAprox(name, PageRequest.of(page, SIZE_TEN)).getContent());
@@ -175,5 +175,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public List<Object> findByCreationDate(LocalDate startDate, LocalDate finishDate, Integer page) {
         return userMapper.listUsersToListDtoComplete(userRepository.findByCreationDateAprox(LocalDateTime.of(startDate, LocalTime.MIN), LocalDateTime.of(finishDate, LocalTime.MAX), PageRequest.of(page, SIZE_TEN)).getContent());
+    }
+    @Override
+    public User findUserLogedByEmail(HttpServletRequest request) {
+        String email = emailUserLoged(request);
+        return findUserByEmail(email);
+    }
+    @Override
+    public String emailUserLoged(HttpServletRequest request) {
+        String autorizacionHeader = request.getHeader(AUTHORIZATION);
+        if(autorizacionHeader==null || !autorizacionHeader.startsWith("Bearer ")) throw new NotFoundException(messageResum.message("user.not.login", null));
+        String token = autorizacionHeader.substring("Bearer ".length());
+        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+        return decodedJWT.getSubject();
     }
 }
