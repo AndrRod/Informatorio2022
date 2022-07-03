@@ -28,15 +28,15 @@ public class EventServiceImpl implements EventService {
     @Autowired
     private EventMapper eventMapper;
     @Override
-    public Event createEvent(EventDtoPart event) {
-        return eventRepository.save(eventMapper.createEventDto(event));
+    public EventDtoPart createEvent(EventDtoPart event) {
+        return eventMapper.entityToDto(eventRepository.save(eventMapper.createEventDto(event)));
     }
     @Override
     public void deleteEventById(Long id) {
         eventRepository.delete(findById(id));
     }
     @Override
-    public Event modifyEventById(Long id, Event event) {
+    public EventDtoPart modifyEventById(Long id, EventDtoPart event) {
         Event ev = findById(id);
         Optional.of(ev).stream().forEach(
                 (e)->{
@@ -45,7 +45,7 @@ public class EventServiceImpl implements EventService {
                     if(event.getAwards()!= null) e.setAwards(event.getAwards());
                 }
         );
-        return eventRepository.save(ev);
+        return eventMapper.entityToDto(eventRepository.save(ev));
     }
 
     @Override

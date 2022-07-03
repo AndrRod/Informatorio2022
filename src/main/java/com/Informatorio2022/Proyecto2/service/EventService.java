@@ -7,9 +7,9 @@ import com.Informatorio2022.Proyecto2.model.Event;
 import javax.servlet.http.HttpServletRequest;
 
 public interface EventService {
-    Event createEvent(EventDtoPart event);
+    EventDtoPart createEvent(EventDtoPart event);
     void deleteEventById(Long id);
-    Event modifyEventById(Long id, Event event);
+    EventDtoPart modifyEventById(Long id, EventDtoPart event);
     Event findById(Long id);
     MessagePag listEventsPagintation(int page, HttpServletRequest request);
 }
